@@ -47,11 +47,6 @@
             overflow-x: hidden;
         }
 
-        @media (min-width: 1024px) {
-            html {
-                scroll-snap-type: y mandatory;
-            }
-        }
 
         body {
             line-height: 1.5;
@@ -92,8 +87,6 @@
             justify-content: center;
             padding: clamp(2rem, 5vw, 5rem);
             position: relative;
-            scroll-snap-align: start;
-            scroll-snap-stop: always;
             overflow: hidden;
         }
 
@@ -1081,6 +1074,22 @@
         let currentIndex = 0;
         let isScrolling = false;
 
+        // Custom smooth scroll — easeInOutCubic, full control over duration
+        function smoothScrollTo(targetY, duration, onDone) {
+            const startY = window.scrollY;
+            const diff   = targetY - startY;
+            let t0 = null;
+            function ease(t) { return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2; }
+            function step(ts) {
+                if (!t0) t0 = ts;
+                const p = Math.min((ts - t0) / duration, 1);
+                window.scrollTo(0, startY + diff * ease(p));
+                if (p < 1) requestAnimationFrame(step);
+                else if (onDone) onDone();
+            }
+            requestAnimationFrame(step);
+        }
+
         function getContainer(section) {
             return section.querySelector('.container') || section;
         }
@@ -1089,61 +1098,45 @@
             if (isScrolling || targetIndex === currentIndex) return;
             if (targetIndex < 0 || targetIndex >= sections.length) return;
 
-            const direction = targetIndex > currentIndex ? 1 : -1;
-            const outgoing  = sections[currentIndex];
-            const incoming  = sections[targetIndex];
-            const outC = getContainer(outgoing);
-            const inC  = getContainer(incoming);
+            const direction   = targetIndex > currentIndex ? 1 : -1;
+            const outgoing    = sections[currentIndex];
+            const incoming    = sections[targetIndex];
+            const outC        = getContainer(outgoing);
+            const leavingHero = currentIndex === 0;
 
-            isScrolling = true;
-            currentIndex = targetIndex;
+            isScrolling   = true;
+            currentIndex  = targetIndex;
 
-            // — Exit: current container zooms out & fades
-            outC.style.transition = 'transform 440ms cubic-bezier(0.4,0,1,1), opacity 340ms ease';
-            outC.style.transform  = direction > 0
-                ? 'scale(0.94) translateY(-22px)'
-                : 'scale(0.94) translateY(22px)';
-            outC.style.opacity = '0';
+            // Reset .reveal state in incoming so they re-animate organically
+            incoming.querySelectorAll('.reveal').forEach(el => el.classList.remove('visible'));
 
+            // ① Fade + drift outgoing content simultaneously with scroll
+            //    (skip when leaving hero — hero stays clean)
+            if (!leavingHero) {
+                outC.style.transition = 'opacity 600ms ease, transform 600ms ease';
+                outC.style.opacity    = '0';
+                outC.style.transform  = direction > 0 ? 'translateY(-20px)' : 'translateY(20px)';
+            }
+
+            // ② Smooth scroll (900ms) — runs at the same time as fade-out
+            smoothScrollTo(incoming.offsetTop, 900, null);
+
+            // ③ When scroll is ~done, organically reveal incoming elements
             setTimeout(() => {
-                // Instant jump to incoming section
-                window.scrollTo(0, incoming.offsetTop);
-
-                // Reset outgoing silently
+                // Clean up outgoing silently
                 outC.style.transition = 'none';
-                outC.style.transform  = '';
                 outC.style.opacity    = '';
+                outC.style.transform  = '';
 
-                // Pre-reveal all .reveal elements so they don't fight the zoom
+                // Force reflow once, then let CSS transition-delays stagger the reveal
+                void incoming.offsetHeight;
                 incoming.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
 
-                // — Enter: incoming starts slightly zoomed-in & invisible
-                inC.style.transition = 'none';
-                inC.style.transform  = direction > 0
-                    ? 'scale(1.06) translateY(28px)'
-                    : 'scale(1.06) translateY(-28px)';
-                inC.style.opacity = '0';
-
-                // Trigger the zoom-settle animation on next paint
-                requestAnimationFrame(() => {
-                    requestAnimationFrame(() => {
-                        inC.style.transition = 'transform 1100ms cubic-bezier(0.16,1,0.3,1), opacity 880ms ease';
-                        inC.style.transform  = 'scale(1) translateY(0)';
-                        inC.style.opacity    = '1';
-                    });
-                });
-
-                setTimeout(() => {
-                    isScrolling = false;
-                    inC.style.transition = '';
-                    inC.style.transform  = '';
-                    inC.style.opacity    = '';
-                }, 1200);
-
-            }, 430);
+                setTimeout(() => { isScrolling = false; }, 850);
+            }, 820);
         }
 
-        // Desktop wheel handler
+        // Desktop: intercept wheel
         if (window.innerWidth >= 1024) {
             document.addEventListener('wheel', (e) => {
                 e.preventDefault();
@@ -1151,18 +1144,18 @@
                 if (e.deltaY >  30) goToSection(currentIndex + 1);
                 if (e.deltaY < -30) goToSection(currentIndex - 1);
             }, { passive: false });
+
+            // Keyboard arrows
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowDown' || e.key === 'PageDown') goToSection(currentIndex + 1);
+                if (e.key === 'ArrowUp'   || e.key === 'PageUp')   goToSection(currentIndex - 1);
+            });
         }
 
-        // Reveal animations (initial load / fallback)
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) entry.target.classList.add('visible');
-            });
-        }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+        // Initial hero reveal
+        sections[0].querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
 
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-        // Nav scroll tint
+        // Nav tint on scroll
         const nav = document.getElementById('main-nav');
         window.addEventListener('scroll', () => {
             nav.classList.toggle('scrolled', window.scrollY > 50);
