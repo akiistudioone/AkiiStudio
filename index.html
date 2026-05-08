@@ -66,7 +66,7 @@
             letter-spacing: -0.01em;
         }
 
-        h1 { font-size: clamp(2.2rem, 6vw, 4.5rem); }
+        h1 { font-size: clamp(1.8rem, 4.8vw, 3.8rem); }
         h2 { font-size: clamp(1.8rem, 4.5vw, 3rem); }
         h3 { font-size: clamp(1.2rem, 2vw, 1.6rem); }
 
@@ -100,9 +100,9 @@
         #hero {
             height: 100dvh;
             overflow: hidden;
-            padding-top: 0;
+            padding-top: clamp(5rem, 8vw, 7rem);
             padding-bottom: 0;
-            justify-content: center;
+            justify-content: flex-start;
         }
 
         /* Marquee Recent Works */
@@ -138,7 +138,7 @@
             width: clamp(240px, 18vw, 400px);
             aspect-ratio: 16 / 10;
             background: var(--white);
-            border-radius: 16px;
+            border-radius: 6px;
             overflow: hidden;
             flex-shrink: 0;
             box-shadow: var(--shadow-soft);
@@ -151,10 +151,7 @@
         .work-item img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            position: absolute;
-            top: 0;
-            left: 0;
+            object-fit: contain;
             display: block;
         }
 
@@ -209,14 +206,14 @@
         .btn {
             display: inline-flex;
             align-items: center;
-            padding: 1rem 2.2rem;
+            padding: 0.8rem 1.8rem;
             border-radius: 12px;
             font-family: var(--font-ui);
             font-weight: 500;
             text-decoration: none;
-            transition: all 0.3s var(--transition-smooth);
+            transition: box-shadow 0.3s var(--transition-smooth), background 0.3s var(--transition-smooth);
             cursor: pointer;
-            font-size: 0.95rem;
+            font-size: 0.88rem;
         }
 
         .btn-primary {
@@ -225,8 +222,7 @@
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 0 0 3px rgba(200, 255, 87, 0.5), 0 0 20px rgba(200, 255, 87, 0.25);
         }
 
         .btn-outline {
@@ -237,8 +233,7 @@
 
         .btn-outline:hover {
             background: var(--white);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
         }
 
         .btn-small {
@@ -726,7 +721,7 @@
                     <p class="reveal reveal-delay-3" style="margin-top: 1rem; margin-bottom: 1.5rem;">
                         Akii Studio schafft sie. Wir helfen Unternehmen, ihre digitale Situation zu verstehen — bevor Systeme gebaut werden.
                     </p>
-                    <div class="hero-ctas reveal reveal-delay-4" style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem;">
+                    <div class="hero-ctas reveal reveal-delay-4" style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.5rem; margin-bottom: 2rem;">
                         <a href="#workshop" class="btn btn-primary">Digital Clarity Workshop starten</a>
                         <a href="#philosophie" class="btn btn-outline">Wie wir arbeiten</a>
                     </div>
