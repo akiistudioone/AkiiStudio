@@ -694,6 +694,56 @@
                 transition-duration: 0.01ms !important;
             }
         }
+
+        /* ── Akii Studio CI ── */
+
+        /* Section labels: lime left accent */
+        section .uppercase.slate {
+            padding-left: 0.75rem;
+            border-left: 2px solid var(--lime);
+        }
+
+        /* Card numbers: subtle lime tint (ghost watermark) */
+        .card-num { color: rgba(200, 255, 87, 0.14); }
+        .card:hover .card-num { color: rgba(200, 255, 87, 0.26); }
+
+        /* Journey highlight already full lime — keep it */
+        .journey-card.highlight .card-num { color: var(--lime); }
+
+        /* Badges: lime hover glow */
+        .badge { transition: border-color 0.25s ease, box-shadow 0.25s ease; }
+        .badge:hover {
+            border-color: var(--lime);
+            box-shadow: 0 0 0 2px rgba(200, 255, 87, 0.3);
+            cursor: default;
+        }
+
+        /* Pricing card: restore lime border */
+        .pricing-card { border-color: var(--lime) !important; }
+
+        /* Principle numbers: handled inline via span */
+
+        /* Kontakt: dark ink CTA section */
+        #kontakt { background: var(--ink); }
+        #kontakt h2 { color: var(--white); }
+        #kontakt p { color: rgba(255, 255, 255, 0.55); }
+        #kontakt .uppercase.slate {
+            color: var(--lime);
+            border-left-color: var(--lime);
+        }
+        #kontakt .contact-box {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.07);
+        }
+        #kontakt .btn-primary {
+            background: var(--lime);
+            color: var(--ink);
+            font-weight: 600;
+        }
+        #kontakt .btn-primary:hover {
+            background: var(--lime);
+            box-shadow: 0 0 0 3px rgba(200, 255, 87, 0.45), 0 0 48px rgba(200, 255, 87, 0.2);
+        }
     </style>
 </head>
 <body>
@@ -797,7 +847,7 @@
                 <div class="grid-2" style="align-items: flex-start; margin-bottom: 3rem;">
                     <div class="reveal">
                         <h2 style="margin-bottom: 1rem;">Digitalisierung beginnt nicht mit Tools.</h2>
-                        <h2 class="italic" style="color: var(--ink); opacity: 0.6;">Sie beginnt mit Klarheit.</h2>
+                        <h2 class="italic" style="color: var(--ink); opacity: 0.6;">Sie beginnt mit <span style="color: var(--lime); opacity: 1;">Klarheit.</span></h2>
                     </div>
                     <div class="reveal reveal-delay-1">
                         <p>
@@ -933,7 +983,7 @@
                                 <li style="color: var(--ink); font-size: 0.9rem;">Priorisierung der nächsten Schritte</li>
                             </ul>
                             <div style="margin-top: 2rem; display: flex; align-items: baseline; gap: 0.5rem;">
-                                <span class="pricing-price" style="margin: 0; color: var(--ink); font-size: 1.5rem;">ca. 1.500 €</span>
+                                <span class="pricing-price" style="margin: 0; color: var(--lime); font-size: 1.5rem;">ca. 1.500 €</span>
                                 <span style="font-size: 0.9rem; color: var(--slate);">zzgl. MwSt.</span>
                             </div>
                         </div>
@@ -1019,15 +1069,15 @@
                 
                 <div>
                     <div class="principle-item reveal reveal-delay-1" style="padding: 1.5rem 0;">
-                        <h3 class="principle-title" style="margin-bottom: 0.5rem; font-size: 1.5rem;">01 · Direkt & Persönlich</h3>
+                        <h3 class="principle-title" style="margin-bottom: 0.5rem; font-size: 1.5rem;"><span style="color: var(--lime);">01 ·</span> Direkt & Persönlich</h3>
                         <p style="font-size: 0.95rem;">Ein Experte an Ihrer Seite, der Ihr Business versteht – kein Stille-Post-Prinzip.</p>
                     </div>
                     <div class="principle-item reveal reveal-delay-2" style="padding: 1.5rem 0;">
-                        <h3 class="principle-title" style="margin-bottom: 0.5rem; font-size: 1.5rem;">02 · Unabhängige Lösungen</h3>
+                        <h3 class="principle-title" style="margin-bottom: 0.5rem; font-size: 1.5rem;"><span style="color: var(--lime);">02 ·</span> Unabhängige Lösungen</h3>
                         <p style="font-size: 0.95rem;">Wir empfehlen das Beste für Sie, nicht das mit der höchsten Provision.</p>
                     </div>
                     <div class="principle-item reveal reveal-delay-3" style="padding: 1.5rem 0;">
-                        <h3 class="principle-title" style="margin-bottom: 0.5rem; font-size: 1.5rem;">03 · Nachhaltige Systeme</h3>
+                        <h3 class="principle-title" style="margin-bottom: 0.5rem; font-size: 1.5rem;"><span style="color: var(--lime);">03 ·</span> Nachhaltige Systeme</h3>
                         <p style="font-size: 0.95rem;">Stabilität und Skalierbarkeit für Lösungen, die mit Ihnen mitwachsen.</p>
                     </div>
                 </div>
@@ -1047,12 +1097,12 @@
                 
                 <div class="contact-box reveal reveal-delay-4" style="margin-top: 3rem; padding: 2rem;">
                     <div style="text-align: left;">
-                        <p style="font-size: 1.1rem; font-weight: 600; color: var(--ink);">akiistudio.de</p>
-                        <p style="color: var(--slate); font-size: 0.9rem;">hallo@akiistudio.de</p>
+                        <p style="font-size: 1.1rem; font-weight: 600; color: var(--white);">akiistudio.de</p>
+                        <p style="color: rgba(255,255,255,0.45); font-size: 0.9rem;">hallo@akiistudio.de</p>
                     </div>
                     <div style="text-align: right;">
-                        <p style="font-size: 1.1rem; font-weight: 600; color: var(--ink);">Stuttgart, DE</p>
-                        <p style="color: var(--slate); font-size: 0.9rem;">Erstgespräch kostenlos</p>
+                        <p style="font-size: 1.1rem; font-weight: 600; color: var(--white);">Stuttgart, DE</p>
+                        <p style="color: rgba(255,255,255,0.45); font-size: 0.9rem;">Erstgespräch kostenlos</p>
                     </div>
                 </div>
             </div>
