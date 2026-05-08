@@ -682,9 +682,15 @@
             .logo { font-size: 1rem; white-space: nowrap; }
             nav .btn { width: auto; padding: 0.5rem 1rem; font-size: 0.78rem; white-space: nowrap; }
 
-            /* Hero: tighter top, slightly smaller h1 */
+            /* Hero: tighter top, smaller h1, fix Klarheit box overlap */
             #hero { padding-top: 4rem; }
-            h1 { font-size: clamp(1.5rem, 6.5vw, 2.2rem); }
+            h1 { font-size: clamp(1.4rem, 5.5vw, 2rem); line-height: 1.3; }
+
+            /* Subtext: smaller and tighter */
+            p { font-size: 0.88rem; line-height: 1.55; max-width: none; }
+
+            /* Buttons: slightly less tall on mobile */
+            .hero-ctas .btn { padding: 0.7rem 1.4rem; }
 
             /* Disable snap on mobile — natural scroll */
             html { scroll-snap-type: none; }
