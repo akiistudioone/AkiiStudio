@@ -687,9 +687,10 @@
             h1 { font-size: clamp(1.4rem, 5.5vw, 2rem); line-height: 1.3; }
 
             /* Subtext: smaller and tighter */
-            p { font-size: 0.88rem; line-height: 1.55; max-width: none; }
+            p { font-size: 0.8rem; line-height: 1.55; max-width: none; }
 
-            /* Buttons: slightly less tall on mobile */
+            /* CTAs: push them lower */
+            .hero-ctas { margin-top: 2.5rem !important; }
             .hero-ctas .btn { padding: 0.7rem 1.4rem; }
 
             /* Disable snap on mobile — natural scroll */
@@ -752,6 +753,94 @@
             background: var(--lime);
             box-shadow: 0 0 0 3px rgba(200, 255, 87, 0.45), 0 0 48px rgba(200, 255, 87, 0.2);
         }
+
+        /* ── Burger menu ── */
+        .burger-btn {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            width: 40px;
+            height: 40px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 10px;
+        }
+        .burger-btn span {
+            display: block;
+            width: 20px;
+            height: 1.5px;
+            background: var(--ink);
+            border-radius: 2px;
+            transition: transform 0.38s cubic-bezier(0.16,1,0.3,1),
+                        opacity 0.25s ease,
+                        width 0.3s ease;
+        }
+        .burger-btn.is-open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+        .burger-btn.is-open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+        .burger-btn.is-open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+        /* Mobile nav overlay */
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: var(--canvas);
+            z-index: 998;
+            flex-direction: column;
+            padding: 5.5rem 2rem 3rem;
+            opacity: 0;
+            transform: translateY(-14px);
+            pointer-events: none;
+            transition: opacity 0.35s cubic-bezier(0.16,1,0.3,1),
+                        transform 0.4s cubic-bezier(0.16,1,0.3,1);
+        }
+        .mobile-nav.is-open {
+            opacity: 1;
+            transform: none;
+            pointer-events: all;
+        }
+        .mobile-links {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            justify-content: center;
+            gap: 0;
+        }
+        .mobile-links a {
+            display: block;
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 8vw, 2.6rem);
+            color: var(--ink);
+            text-decoration: none;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+            opacity: 0;
+            transform: translateY(18px);
+            transition: opacity 0.4s ease, transform 0.45s cubic-bezier(0.16,1,0.3,1), color 0.2s ease;
+        }
+        .mobile-links a:first-child { border-top: 1px solid var(--border); }
+        .mobile-links a:hover, .mobile-links a:active { color: var(--lime); }
+        .mobile-nav.is-open .mobile-links a:nth-child(1) { opacity:1; transform:none; transition-delay:0.07s; }
+        .mobile-nav.is-open .mobile-links a:nth-child(2) { opacity:1; transform:none; transition-delay:0.12s; }
+        .mobile-nav.is-open .mobile-links a:nth-child(3) { opacity:1; transform:none; transition-delay:0.17s; }
+        .mobile-nav.is-open .mobile-links a:nth-child(4) { opacity:1; transform:none; transition-delay:0.22s; }
+        .mobile-nav.is-open .mobile-links a:nth-child(5) { opacity:1; transform:none; transition-delay:0.27s; }
+        .mobile-nav-cta {
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity 0.4s ease 0.3s, transform 0.4s ease 0.3s;
+        }
+        .mobile-nav.is-open .mobile-nav-cta { opacity: 1; transform: none; }
+
+        @media (max-width: 1023px) {
+            .nav-cta  { display: none !important; }
+            .burger-btn { display: flex; }
+            .mobile-nav { display: flex; }
+        }
     </style>
 </head>
 <body>
@@ -761,8 +850,24 @@
             <img src="/AkiiStudioLogo.jpg" alt="Akii Studio Logo" style="height: 1.4rem; width: 1.4rem; border-radius: 5px; object-fit: cover; object-position: center; transform: scale(1.15); overflow: hidden;">
             Akii Studio
         </a>
-        <a href="#workshop" class="btn btn-lime-outline btn-small">Workshop starten</a>
+        <a href="#workshop" class="btn btn-lime-outline btn-small nav-cta">Workshop starten</a>
+        <button class="burger-btn" id="burger-btn" aria-label="Menü öffnen" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
     </nav>
+
+    <div class="mobile-nav" id="mobile-nav">
+        <nav class="mobile-links">
+            <a href="#philosophie">Philosophie</a>
+            <a href="#leistungen">Leistungen</a>
+            <a href="#workshop">Workshop</a>
+            <a href="#ueber-uns">Über uns</a>
+            <a href="#kontakt">Kontakt</a>
+        </nav>
+        <a href="mailto:hallo@akiistudio.de" class="btn btn-primary mobile-nav-cta">Workshop starten →</a>
+    </div>
 
     <main>
         <!-- Section 1: Hero -->
@@ -1265,6 +1370,29 @@
 
             sections.forEach(s => { prepare(s); io.observe(s); });
         }
+    })();
+
+    // ── Burger menu ──
+    (function burgerMenu() {
+        const btn = document.getElementById('burger-btn');
+        const menu = document.getElementById('mobile-nav');
+        if (!btn || !menu) return;
+
+        function open() {
+            btn.classList.add('is-open');
+            menu.classList.add('is-open');
+            btn.setAttribute('aria-expanded', 'true');
+            document.body.style.overflow = 'hidden';
+        }
+        function close() {
+            btn.classList.remove('is-open');
+            menu.classList.remove('is-open');
+            btn.setAttribute('aria-expanded', 'false');
+            document.body.style.overflow = '';
+        }
+
+        btn.addEventListener('click', () => btn.classList.contains('is-open') ? close() : open());
+        menu.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
     })();
     </script>
     </script>
