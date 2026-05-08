@@ -47,11 +47,6 @@
             overflow-x: hidden;
         }
 
-        @media (min-width: 1024px) {
-            html {
-                scroll-snap-type: y mandatory;
-            }
-        }
 
         body {
             line-height: 1.5;
@@ -66,7 +61,7 @@
             letter-spacing: -0.01em;
         }
 
-        h1 { font-size: clamp(2.2rem, 6vw, 4.5rem); }
+        h1 { font-size: clamp(1.8rem, 4.8vw, 3.8rem); }
         h2 { font-size: clamp(1.8rem, 4.5vw, 3rem); }
         h3 { font-size: clamp(1.2rem, 2vw, 1.6rem); }
 
@@ -92,17 +87,17 @@
             justify-content: center;
             padding: clamp(2rem, 5vw, 5rem);
             position: relative;
+            overflow: hidden;
             scroll-snap-align: start;
             scroll-snap-stop: always;
-            overflow: hidden;
         }
 
         #hero {
             height: 100dvh;
             overflow: hidden;
-            padding-top: 0;
+            padding-top: clamp(5rem, 8vw, 7rem);
             padding-bottom: 0;
-            justify-content: center;
+            justify-content: flex-start;
         }
 
         /* Marquee Recent Works */
@@ -124,6 +119,9 @@
             gap: 1rem;
             white-space: nowrap;
             width: max-content;
+            will-change: transform;
+            backface-visibility: hidden;
+            transform: translateZ(0);
         }
 
         .marquee-row.to-left {
@@ -138,7 +136,7 @@
             width: clamp(240px, 18vw, 400px);
             aspect-ratio: 16 / 10;
             background: var(--white);
-            border-radius: 16px;
+            border-radius: 6px;
             overflow: hidden;
             flex-shrink: 0;
             box-shadow: var(--shadow-soft);
@@ -148,12 +146,13 @@
             position: relative;
         }
 
-        .work-item .img-placeholder {
+        .work-item img {
             width: 100%;
             height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
+            object-fit: cover;
+            display: block;
+            backface-visibility: hidden;
+            transform: translateZ(0);
         }
 
         @keyframes marquee-left {
@@ -207,14 +206,14 @@
         .btn {
             display: inline-flex;
             align-items: center;
-            padding: 1rem 2.2rem;
+            padding: 0.8rem 1.8rem;
             border-radius: 12px;
             font-family: var(--font-ui);
             font-weight: 500;
             text-decoration: none;
-            transition: all 0.3s var(--transition-smooth);
+            transition: box-shadow 0.3s var(--transition-smooth), background 0.3s var(--transition-smooth);
             cursor: pointer;
-            font-size: 0.95rem;
+            font-size: 0.88rem;
         }
 
         .btn-primary {
@@ -223,8 +222,7 @@
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 0 0 3px rgba(200, 255, 87, 0.5), 0 0 20px rgba(200, 255, 87, 0.25);
         }
 
         .btn-outline {
@@ -235,8 +233,7 @@
 
         .btn-outline:hover {
             background: var(--white);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
         }
 
         .btn-small {
@@ -254,22 +251,22 @@
             border-color: var(--lime);
         }
 
-        /* Reveal Animations */
-        .reveal {
-            opacity: 0;
-            transform: translateY(28px);
-            transition: opacity 0.8s var(--transition-smooth), transform 0.8s var(--transition-smooth);
+        /* ── Apple-style section entrance ── */
+        @media (min-width: 1024px) {
+            html { scroll-snap-type: y mandatory; }
         }
 
-        .reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
+        /* Subtle container depth — per-element system handles the real entrance */
+        section > .container {
+            transform: scale(0.985);
+            transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1);
         }
+        section.s-visible > .container { transform: none; }
 
-        .reveal-delay-1 { transition-delay: 0.1s; }
-        .reveal-delay-2 { transition-delay: 0.2s; }
-        .reveal-delay-3 { transition-delay: 0.3s; }
-        .reveal-delay-4 { transition-delay: 0.45s; }
+        /* .reveal neutralised — organic system owns opacity/transform now */
+        .reveal, .reveal.visible,
+        .reveal-delay-1, .reveal-delay-2,
+        .reveal-delay-3, .reveal-delay-4 { transition-delay: 0s; }
 
         /* Hero Specific */
         .hero-bg-letter {
@@ -709,7 +706,10 @@
 <body>
 
     <nav id="main-nav">
-        <a href="#" class="logo">Akii Studio</a>
+        <a href="#" class="logo" style="display: flex; align-items: center; gap: 0.5rem;">
+            <img src="/AkiiStudioLogo.jpg" alt="Akii Studio Logo" style="height: 1.4rem; width: 1.4rem; border-radius: 5px; object-fit: cover; object-position: center; transform: scale(1.15); overflow: hidden;">
+            Akii Studio
+        </a>
         <a href="#workshop" class="btn btn-lime-outline btn-small">Workshop starten</a>
     </nav>
 
@@ -719,12 +719,12 @@
             <div class="hero-bg-letter">Akii</div>
             <div class="container" style="flex: 1; display: flex; flex-direction: column; justify-content: center; height: 100%;">
                 <div class="hero-content">
-                    <h1 class="reveal reveal-delay-1">Die meisten Digitalprojekte<br>scheitern nicht an Technik.</h1>
-                    <h1 class="reveal reveal-delay-2" style="font-family: var(--font-display); font-style: italic;">Sie scheitern an fehlender <span class="lime">Klarheit.</span></h1>
+                    <h1 class="reveal reveal-delay-1" style="font-family: var(--font-ui); font-weight: 700;">Die meisten Digitalprojekte<br>scheitern nicht an Technik.</h1>
+                    <h1 class="reveal reveal-delay-2" style="font-family: var(--font-ui); font-weight: 300;">Sie scheitern an fehlender <span style="background: var(--ink); color: var(--lime); padding: 1px 5px 3px; border-radius: 5px; display: inline; font-weight: 300;">Klarheit.</span></h1>
                     <p class="reveal reveal-delay-3" style="margin-top: 1rem; margin-bottom: 1.5rem;">
                         Akii Studio schafft sie. Wir helfen Unternehmen, ihre digitale Situation zu verstehen — bevor Systeme gebaut werden.
                     </p>
-                    <div class="hero-ctas reveal reveal-delay-4" style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem;">
+                    <div class="hero-ctas reveal reveal-delay-4" style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.5rem; margin-bottom: 2rem;">
                         <a href="#workshop" class="btn btn-primary">Digital Clarity Workshop starten</a>
                         <a href="#philosophie" class="btn btn-outline">Wie wir arbeiten</a>
                     </div>
@@ -733,26 +733,40 @@
             
             <div class="marquee-container reveal reveal-delay-4" style="width: 100%; padding-bottom: 1rem;">
                 <div class="marquee-row to-left">
-                    <div class="work-item"><div class="img-placeholder placeholder-dentist"></div></div>
-                    <div class="work-item"><div class="img-placeholder placeholder-notary"></div></div>
-                    <div class="work-item"><div class="img-placeholder placeholder-sports"></div></div>
-                    <div class="work-item"><div class="img-placeholder placeholder-marketing"></div></div>
+                    <div class="work-item"><img src="/banner/eichholz1.png" alt="Eichholz" loading="lazy"></div>
+                    <div class="work-item"><img src="/banner/holzly1.png" alt="Holzly" loading="lazy"></div>
+                    <div class="work-item"><img src="/banner/lumina1.png" alt="Lumina" loading="lazy"></div>
+                    <div class="work-item"><img src="/banner/notary.png" alt="Notary" loading="lazy"></div>
+                    <div class="work-item"><img src="/banner/akiipay.png" alt="AkiiPay" loading="lazy"></div>
+                    <div class="work-item"><img src="/banner/angebotgo1.png" alt="AngebotGo" loading="lazy"></div>
+                    <div class="work-item"><img src="/banner/Manufaktur1.png" alt="Manufaktur" loading="lazy"></div>
+                    <div class="work-item"><img src="/banner/holzly2.png" alt="Holzly 2" loading="lazy"></div>
                     <!-- Duplicate for seamless loop -->
-                    <div class="work-item"><div class="img-placeholder placeholder-dentist"></div></div>
-                    <div class="work-item"><div class="img-placeholder placeholder-notary"></div></div>
-                    <div class="work-item"><div class="img-placeholder placeholder-sports"></div></div>
-                    <div class="work-item"><div class="img-placeholder placeholder-marketing"></div></div>
+                    <div class="work-item"><img src="/banner/eichholz1.png" alt="Eichholz" loading="lazy"></div>
+                    <div class="work-item"><img src="/banner/holzly1.png" alt="Holzly" loading="lazy"></div>
+                    <div class="work-item"><img src="/banner/lumina1.png" alt="Lumina" loading="lazy"></div>
+                    <div class="work-item"><img src="/banner/notary.png" alt="Notary" loading="lazy"></div>
+                    <div class="work-item"><img src="/banner/akiipay.png" alt="AkiiPay" loading="lazy"></div>
+                    <div class="work-item"><img src="/banner/angebotgo1.png" alt="AngebotGo" loading="lazy"></div>
+                    <div class="work-item"><img src="/banner/Manufaktur1.png" alt="Manufaktur" loading="lazy"></div>
+                    <div class="work-item"><img src="/banner/holzly2.png" alt="Holzly 2" loading="lazy"></div>
                 </div>
                 <div class="marquee-row to-right">
-                    <div class="work-item"><div class="img-placeholder placeholder-sports"></div></div>
-                    <div class="work-item"><div class="img-placeholder placeholder-marketing"></div></div>
-                    <div class="work-item"><div class="img-placeholder placeholder-dentist"></div></div>
-                    <div class="work-item"><div class="img-placeholder placeholder-notary"></div></div>
+                    <div class="work-item"><img src="/banner/angebotgo2.png" alt="AngebotGo 2" loading="lazy"></div>
+                    <div class="work-item"><img src="/banner/angebotgo3.png" alt="AngebotGo 3" loading="lazy"></div>
+                    <div class="work-item"><img src="/banner/barber.jpg.png" alt="Barber" loading="lazy"></div>
+                    <div class="work-item"><img src="/banner/eichholz2.png" alt="Eichholz 2" loading="lazy"></div>
+                    <div class="work-item"><img src="/banner/abgeliefert.png" alt="Abgeliefert" loading="lazy"></div>
+                    <div class="work-item"><img src="/banner/notaryclear.png" alt="Notary Clear" loading="lazy"></div>
+
                     <!-- Duplicate for seamless loop -->
-                    <div class="work-item"><div class="img-placeholder placeholder-sports"></div></div>
-                    <div class="work-item"><div class="img-placeholder placeholder-marketing"></div></div>
-                    <div class="work-item"><div class="img-placeholder placeholder-dentist"></div></div>
-                    <div class="work-item"><div class="img-placeholder placeholder-notary"></div></div>
+                    <div class="work-item"><img src="/banner/angebotgo2.png" alt="AngebotGo 2" loading="lazy"></div>
+                    <div class="work-item"><img src="/banner/angebotgo3.png" alt="AngebotGo 3" loading="lazy"></div>
+                    <div class="work-item"><img src="/banner/barber.jpg.png" alt="Barber" loading="lazy"></div>
+                    <div class="work-item"><img src="/banner/eichholz2.png" alt="Eichholz 2" loading="lazy"></div>
+                    <div class="work-item"><img src="/banner/abgeliefert.png" alt="Abgeliefert" loading="lazy"></div>
+                    <div class="work-item"><img src="/banner/notaryclear.png" alt="Notary Clear" loading="lazy"></div>
+
                 </div>
             </div>
         </section>
@@ -1061,77 +1075,127 @@
     </footer>
 
     <script>
-        // Smooth Scroll Snap Override for Desktop
-        let isScrolling = false;
-        const sections = document.querySelectorAll('section');
+    // ─────────────────────────────────────────────────────────────────
+    //  SCROLL NAVIGATION
+    // ─────────────────────────────────────────────────────────────────
+    const sections = Array.from(document.querySelectorAll('section'));
+    let locked = false;
 
-        function getCurrentSectionIndex() {
-            let index = 0;
-            let minDistance = Math.abs(window.scrollY - sections[0].offsetTop);
-            
-            sections.forEach((section, i) => {
-                const distance = Math.abs(window.scrollY - section.offsetTop);
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    index = i;
-                }
-            });
-            return index;
-        }
+    function nearest() {
+        return sections.reduce((b, s, i) => {
+            const d = Math.abs(window.scrollY - s.offsetTop);
+            return d < b.d ? { i, d } : b;
+        }, { i: 0, d: Infinity }).i;
+    }
 
-        if (window.innerWidth >= 1024) {
-            document.addEventListener('wheel', (e) => {
-                if (isScrolling) {
-                    e.preventDefault();
-                    return;
-                }
-                
-                const currentIndex = getCurrentSectionIndex();
-                let targetIndex = currentIndex;
+    // Container depth on section enter (subtle scale only)
+    const depthIO = new IntersectionObserver(entries => {
+        entries.forEach(e => e.target.classList.toggle('s-visible', e.intersectionRatio >= 0.5));
+    }, { threshold: 0.5 });
+    sections.forEach(s => depthIO.observe(s));
 
-                if (e.deltaY > 50) {
-                    targetIndex = Math.min(currentIndex + 1, sections.length - 1);
-                } else if (e.deltaY < -50) {
-                    targetIndex = Math.max(currentIndex - 1, 0);
-                }
+    if (window.innerWidth >= 1024) {
+        document.addEventListener('wheel', e => {
+            e.preventDefault();
+            if (locked) return;
+            const dir = e.deltaY > 20 ? 1 : e.deltaY < -20 ? -1 : 0;
+            if (!dir) return;
+            const t = Math.min(Math.max(nearest() + dir, 0), sections.length - 1);
+            if (t === nearest()) return;
+            locked = true;
+            sections[t].scrollIntoView({ behavior: 'smooth', block: 'start' });
+            setTimeout(() => { locked = false; }, 950);
+        }, { passive: false });
 
-                if (targetIndex !== currentIndex) {
-                    e.preventDefault();
-                    isScrolling = true;
-                    sections[targetIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    
-                    setTimeout(() => {
-                        isScrolling = false;
-                    }, 1000);
-                }
-            }, { passive: false });
-        }
-
-        // Reveal Animations with Intersection Observer
-        const observerOptions = {
-            threshold: 0.15,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-        // Navigation Scroll Effect
-        const nav = document.getElementById('main-nav');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                nav.classList.add('scrolled');
-            } else {
-                nav.classList.remove('scrolled');
-            }
+        document.addEventListener('keydown', e => {
+            const dir = { ArrowDown: 1, PageDown: 1, ArrowUp: -1, PageUp: -1 }[e.key];
+            if (!dir || locked) return;
+            e.preventDefault();
+            const t = Math.min(Math.max(nearest() + dir, 0), sections.length - 1);
+            locked = true;
+            sections[t].scrollIntoView({ behavior: 'smooth', block: 'start' });
+            setTimeout(() => { locked = false; }, 950);
         });
+    }
+
+    const nav = document.getElementById('main-nav');
+    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 50));
+
+    // ─────────────────────────────────────────────────────────────────
+    //  ORGANIC ANIMATION SYSTEM
+    // ─────────────────────────────────────────────────────────────────
+    (function organicAnim() {
+        const EASE = 'cubic-bezier(0.22, 1, 0.36, 1)';
+
+        // Animated-container selectors — their CHILDREN are not individually animated
+        const CARD_SEL = '.card, .concept-card, .journey-card, .quote-card, .contact-box, .principle-item';
+
+        // Four card rotation variants so no two adjacent cards look the same
+        const CARD_FX = [
+            { t: 'translateY(32px) translateX(-5px) rotate(-1.8deg)', o: 'bottom center' },
+            { t: 'translateY(28px) translateX(6px)  rotate(1.5deg)',  o: 'bottom center' },
+            { t: 'translateY(36px) translateX(-4px) rotate(-2.5deg)', o: 'bottom right'  },
+            { t: 'translateY(24px) translateX(5px)  rotate(2deg)',    o: 'bottom left'   },
+        ];
+        let cardCycle = 0;
+
+        // Classify element → { transform, duration, [transformOrigin] }
+        function classify(el) {
+            const tag = el.tagName;
+            if (/^H[1-3]$/.test(tag))                   return { t: 'translateY(30px)',  d: 700 };
+            if (tag === 'P' || el.matches('.uppercase')) return { t: 'translateY(18px)',  d: 620 };
+            if (el.matches('a.btn, .btn'))               return { t: 'translateY(16px)',  d: 540 };
+            if (tag === 'IMG')                           return { t: 'scale(0.97)',        d: 800 };
+            if (el.matches('.badge'))                    return { t: 'translateY(12px)',  d: 500 };
+            if (el.matches(CARD_SEL)) {
+                const fx = CARD_FX[cardCycle++ % CARD_FX.length];
+                return { t: fx.t, d: 720, o: fx.o };
+            }
+            return { t: 'translateY(20px)', d: 620 };
+        }
+
+        // Stamp each animatable element with inline initial state
+        function prepare(section) {
+            const Q = 'h1,h2,h3,p,a.btn,.btn,.card,.concept-card,.journey-card,.quote-card,.badge,.principle-item,.contact-box';
+            section.querySelectorAll(Q).forEach(el => {
+                if (el.closest('.work-item, .marquee-container')) return; // skip marquee tiles
+                if (!el.matches(CARD_SEL) && el.closest(CARD_SEL)) return; // skip card children
+                if (el.dataset.ao) return;                                  // already stamped
+                const c = classify(el);
+                el.dataset.ao = '1';
+                el.style.opacity   = '0';
+                el.style.transform = c.t;
+                el.style.transition = `opacity ${c.d}ms ${EASE}, transform ${c.d}ms ${EASE}`;
+                if (c.o) el.style.transformOrigin = c.o;
+            });
+        }
+
+        // Non-uniform, strictly-increasing stagger (50–100ms between siblings)
+        const GAP = [70, 50, 85, 55, 100, 60, 80, 90, 65, 75];
+        function staggerDelay(i) {
+            let d = 0;
+            for (let j = 0; j < i; j++) d += GAP[j % GAP.length];
+            return Math.min(d, 560);   // hard cap so later elements don't wait forever
+        }
+
+        // Fire animations when section reaches 20% visibility
+        const io = new IntersectionObserver(entries => {
+            entries.forEach(({ target, isIntersecting }) => {
+                if (!isIntersecting) return;
+                Array.from(target.querySelectorAll('[data-ao="1"]')).forEach((el, i) => {
+                    setTimeout(() => {
+                        el.style.opacity   = '1';
+                        el.style.transform = 'none';
+                        el.dataset.ao      = 'done';   // animate-once
+                    }, staggerDelay(i));
+                });
+                io.unobserve(target);
+            });
+        }, { threshold: 0.2 });
+
+        sections.forEach(s => { prepare(s); io.observe(s); });
+    })();
+    </script>
     </script>
 </body>
 </html>
