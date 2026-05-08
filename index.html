@@ -632,66 +632,59 @@
             box-shadow: var(--shadow-soft);
         }
 
-        /* Mobile Adjustments */
+        /* ── Mobile ── */
         @media (max-width: 1023px) {
             section {
                 height: auto;
                 min-height: 100dvh;
-                padding: 8rem 1.5rem;
+                padding: 6rem 1.25rem 4rem;
+                scroll-snap-align: none;
+                scroll-snap-stop: normal;
             }
+
+            #hero {
+                padding-top: 5rem;
+                padding-bottom: 0;
+                min-height: 100dvh;
+                height: auto;
+            }
+
+            /* Banner: one visible row, smaller tiles, full width scrollable */
+            .marquee-container {
+                gap: 0.6rem;
+            }
+
+            .work-item {
+                width: clamp(160px, 44vw, 220px);
+                aspect-ratio: 16 / 10;
+            }
+
+            .marquee-row.to-left  { animation-duration: 30s; }
+            .marquee-row.to-right { animation-duration: 36s; }
 
             .grid-3, .grid-2, .journey-grid, .concept-grid {
                 grid-template-columns: 1fr;
             }
 
-            .hero-bg-letter {
-                font-size: 100vw;
-                right: -20%;
-            }
+            .hero-bg-letter { display: none; }
 
-            .process-flow {
-                flex-direction: column;
-                gap: 3rem;
-                padding-top: 6rem;
-            }
-
-            .flow-line {
-                width: 1px;
-                height: 100%;
-                left: 50%;
-                top: 0;
-            }
-
-            .flow-pulse {
-                width: 2px;
-                height: 40px;
-                left: 50%;
-                transform: translateX(-50%);
-                animation: signal-flow-v 4s linear infinite;
-            }
-
-            @keyframes signal-flow-v {
-                0%   { top: 0%; opacity: 0; }
-                5%   { opacity: 1; }
-                95%  { opacity: 1; }
-                100% { top: 100%; opacity: 0; }
-            }
-
-            .flow-node {
-                width: 100%;
-            }
-
-            .hero-ctas {
-                flex-direction: column;
-            }
+            .hero-ctas { flex-direction: column; }
 
             .btn {
                 width: 100%;
                 justify-content: center;
             }
 
-            .card-num {
-                font-size: 8rem;
+            .card-num { font-size: 6rem; }
+
+            /* Disable snap on mobile — natural scroll */
+            html { scroll-snap-type: none; }
+
+            /* Animations fire immediately on mobile (no snap, rely on IO) */
+            [data-ao="1"] {
+                opacity: 0;
+                transform: translateY(16px) !important;
+                transition-duration: 500ms !important;
             }
         }
 
@@ -720,7 +713,7 @@
             <div class="container" style="flex: 1; display: flex; flex-direction: column; justify-content: center; height: 100%;">
                 <div class="hero-content">
                     <h1 class="reveal reveal-delay-1" style="font-family: var(--font-ui); font-weight: 700;">Die meisten Digitalprojekte<br>scheitern nicht an Technik.</h1>
-                    <h1 class="reveal reveal-delay-2" style="font-family: var(--font-ui); font-weight: 300;">Sie scheitern an fehlender <span style="background: var(--ink); color: var(--lime); padding: 1px 5px 3px; border-radius: 5px; display: inline; font-weight: 300;">Klarheit.</span></h1>
+                    <h1 class="reveal reveal-delay-2" style="font-family: var(--font-ui); font-weight: 300;">Sie scheitern an fehlender <span style="background: var(--ink); color: var(--lime); padding: 0 6px; border-radius: 5px; display: inline; line-height: 1.15; box-decoration-break: clone; -webkit-box-decoration-break: clone; font-weight: 300;">Klarheit.</span></h1>
                     <p class="reveal reveal-delay-3" style="margin-top: 1rem; margin-bottom: 1.5rem;">
                         Akii Studio schafft sie. Wir helfen Unternehmen, ihre digitale Situation zu verstehen — bevor Systeme gebaut werden.
                     </p>
@@ -1178,7 +1171,8 @@
             return Math.min(d, 560);   // hard cap so later elements don't wait forever
         }
 
-        // Fire animations when section reaches 20% visibility
+        // Fire when section enters viewport — low threshold works on both desktop & mobile
+        const isMobile = window.innerWidth < 1024;
         const io = new IntersectionObserver(entries => {
             entries.forEach(({ target, isIntersecting }) => {
                 if (!isIntersecting) return;
@@ -1186,12 +1180,12 @@
                     setTimeout(() => {
                         el.style.opacity   = '1';
                         el.style.transform = 'none';
-                        el.dataset.ao      = 'done';   // animate-once
-                    }, staggerDelay(i));
+                        el.dataset.ao      = 'done';
+                    }, isMobile ? Math.min(staggerDelay(i), 300) : staggerDelay(i));
                 });
                 io.unobserve(target);
             });
-        }, { threshold: 0.2 });
+        }, { threshold: isMobile ? 0.05 : 0.2 });
 
         sections.forEach(s => { prepare(s); io.observe(s); });
     })();
