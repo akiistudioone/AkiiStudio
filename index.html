@@ -1104,35 +1104,35 @@
             const outC        = getContainer(outgoing);
             const leavingHero = currentIndex === 0;
 
-            isScrolling   = true;
-            currentIndex  = targetIndex;
+            isScrolling  = true;
+            currentIndex = targetIndex;
 
-            // Reset .reveal state in incoming so they re-animate organically
+            // Reset incoming .reveal elements so they re-animate
             incoming.querySelectorAll('.reveal').forEach(el => el.classList.remove('visible'));
 
-            // ① Fade + drift outgoing content simultaneously with scroll
-            //    (skip when leaving hero — hero stays clean)
+            // ① Fade + drift outgoing — fires immediately, no waiting
             if (!leavingHero) {
-                outC.style.transition = 'opacity 600ms ease, transform 600ms ease';
+                outC.style.transition = 'opacity 480ms ease, transform 480ms ease';
                 outC.style.opacity    = '0';
-                outC.style.transform  = direction > 0 ? 'translateY(-20px)' : 'translateY(20px)';
+                outC.style.transform  = direction > 0 ? 'translateY(-14px)' : 'translateY(14px)';
             }
 
-            // ② Smooth scroll (900ms) — runs at the same time as fade-out
-            smoothScrollTo(incoming.offsetTop, 900, null);
+            // ② Scroll — fires immediately, same time as fade-out
+            smoothScrollTo(incoming.offsetTop, 780, null);
 
-            // ③ When scroll is ~done, organically reveal incoming elements
+            // ③ Incoming reveals fire mid-scroll (not after) — elements fly in
+            //    while the section is still arriving
             setTimeout(() => {
-                // Clean up outgoing silently
+                void incoming.offsetHeight;
+                incoming.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+            }, 260);
+
+            // ④ Cleanup outgoing + unlock — just after scroll completes
+            setTimeout(() => {
                 outC.style.transition = 'none';
                 outC.style.opacity    = '';
                 outC.style.transform  = '';
-
-                // Force reflow once, then let CSS transition-delays stagger the reveal
-                void incoming.offsetHeight;
-                incoming.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
-
-                setTimeout(() => { isScrolling = false; }, 850);
+                isScrolling = false;
             }, 820);
         }
 
