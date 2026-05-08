@@ -1074,12 +1074,12 @@
         let currentIndex = 0;
         let isScrolling = false;
 
-        // Custom smooth scroll — easeInOutCubic, full control over duration
+        // easeOutCubic: starts at full speed, decelerates — feels instant
         function smoothScrollTo(targetY, duration, onDone) {
             const startY = window.scrollY;
             const diff   = targetY - startY;
             let t0 = null;
-            function ease(t) { return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2; }
+            function ease(t) { return 1 - Math.pow(1 - t, 3); }
             function step(ts) {
                 if (!t0) t0 = ts;
                 const p = Math.min((ts - t0) / duration, 1);
@@ -1107,33 +1107,32 @@
             isScrolling  = true;
             currentIndex = targetIndex;
 
-            // Reset incoming .reveal elements so they re-animate
+            // Reset incoming .reveal elements
             incoming.querySelectorAll('.reveal').forEach(el => el.classList.remove('visible'));
 
-            // ① Fade + drift outgoing — fires immediately, no waiting
+            // Everything fires at t=0 simultaneously — no waiting
+
+            // ① Outgoing fades out quickly while scroll is already moving
             if (!leavingHero) {
-                outC.style.transition = 'opacity 480ms ease, transform 480ms ease';
+                outC.style.transition = 'opacity 380ms ease-out, transform 380ms ease-out';
                 outC.style.opacity    = '0';
-                outC.style.transform  = direction > 0 ? 'translateY(-14px)' : 'translateY(14px)';
+                outC.style.transform  = direction > 0 ? 'translateY(-12px)' : 'translateY(12px)';
             }
 
-            // ② Scroll — fires immediately, same time as fade-out
-            smoothScrollTo(incoming.offsetTop, 780, null);
+            // ② Scroll starts immediately — easeOutCubic means full speed from frame 1
+            smoothScrollTo(incoming.offsetTop, 680, null);
 
-            // ③ Incoming reveals fire mid-scroll (not after) — elements fly in
-            //    while the section is still arriving
-            setTimeout(() => {
-                void incoming.offsetHeight;
-                incoming.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
-            }, 260);
+            // ③ Incoming reveals fire immediately — fly in as section arrives
+            void incoming.offsetHeight;
+            incoming.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
 
-            // ④ Cleanup outgoing + unlock — just after scroll completes
+            // ④ Cleanup after scroll done
             setTimeout(() => {
                 outC.style.transition = 'none';
                 outC.style.opacity    = '';
                 outC.style.transform  = '';
                 isScrolling = false;
-            }, 820);
+            }, 720);
         }
 
         function getNearestSectionIndex() {
