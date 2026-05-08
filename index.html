@@ -88,6 +88,8 @@
             padding: clamp(2rem, 5vw, 5rem);
             position: relative;
             overflow: hidden;
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
         }
 
         #hero {
@@ -249,22 +251,37 @@
             border-color: var(--lime);
         }
 
-        /* Reveal Animations */
+        /* ── Apple-style section entrance ── */
+        @media (min-width: 1024px) {
+            html { scroll-snap-type: y mandatory; }
+        }
+
+        section > .container {
+            transform: translateY(52px) scale(0.97);
+            transition:
+                transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform;
+        }
+        section.s-visible > .container {
+            transform: none;
+        }
+
+        /* Individual element stagger — fires within the settling container */
         .reveal {
             opacity: 0;
-            transform: translateY(28px);
-            transition: opacity 0.8s var(--transition-smooth), transform 0.8s var(--transition-smooth);
+            transform: translateY(22px);
+            transition:
+                opacity  0.75s cubic-bezier(0.25, 1, 0.5, 1),
+                transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
         }
-
         .reveal.visible {
             opacity: 1;
-            transform: translateY(0);
+            transform: none;
         }
-
-        .reveal-delay-1 { transition-delay: 0.1s; }
-        .reveal-delay-2 { transition-delay: 0.2s; }
-        .reveal-delay-3 { transition-delay: 0.3s; }
-        .reveal-delay-4 { transition-delay: 0.45s; }
+        .reveal-delay-1 { transition-delay: 0.08s; }
+        .reveal-delay-2 { transition-delay: 0.18s; }
+        .reveal-delay-3 { transition-delay: 0.28s; }
+        .reveal-delay-4 { transition-delay: 0.40s; }
 
         /* Hero Specific */
         .hero-bg-letter {
@@ -1071,105 +1088,70 @@
 
     <script>
         const sections = Array.from(document.querySelectorAll('section'));
-        let currentIndex = 0;
-        let isScrolling = false;
+        let locked = false;
 
-        // easeOutCubic: starts at full speed, decelerates — feels instant
-        function smoothScrollTo(targetY, duration, onDone) {
-            const startY = window.scrollY;
-            const diff   = targetY - startY;
-            let t0 = null;
-            function ease(t) { return 1 - Math.pow(1 - t, 3); }
-            function step(ts) {
-                if (!t0) t0 = ts;
-                const p = Math.min((ts - t0) / duration, 1);
-                window.scrollTo(0, startY + diff * ease(p));
-                if (p < 1) requestAnimationFrame(step);
-                else if (onDone) onDone();
-            }
-            requestAnimationFrame(step);
+        // ── Nearest section by scroll position ──
+        function nearest() {
+            return sections.reduce((best, s, i) => {
+                const d = Math.abs(window.scrollY - s.offsetTop);
+                return d < best.d ? { i, d } : best;
+            }, { i: 0, d: Infinity }).i;
         }
 
-        function getContainer(section) {
-            return section.querySelector('.container') || section;
-        }
-
-        function goToSection(targetIndex) {
-            if (isScrolling || targetIndex === currentIndex) return;
-            if (targetIndex < 0 || targetIndex >= sections.length) return;
-
-            const direction   = targetIndex > currentIndex ? 1 : -1;
-            const outgoing    = sections[currentIndex];
-            const incoming    = sections[targetIndex];
-            const outC        = getContainer(outgoing);
-            const leavingHero = currentIndex === 0;
-
-            isScrolling  = true;
-            currentIndex = targetIndex;
-
-            // Reset incoming .reveal elements
-            incoming.querySelectorAll('.reveal').forEach(el => el.classList.remove('visible'));
-
-            // Everything fires at t=0 simultaneously — no waiting
-
-            // ① Outgoing fades out quickly while scroll is already moving
-            if (!leavingHero) {
-                outC.style.transition = 'opacity 380ms ease-out, transform 380ms ease-out';
-                outC.style.opacity    = '0';
-                outC.style.transform  = direction > 0 ? 'translateY(-12px)' : 'translateY(12px)';
-            }
-
-            // ② Scroll starts immediately — easeOutCubic means full speed from frame 1
-            smoothScrollTo(incoming.offsetTop, 680, null);
-
-            // ③ Incoming reveals fire immediately — fly in as section arrives
-            void incoming.offsetHeight;
-            incoming.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
-
-            // ④ Cleanup after scroll done
-            setTimeout(() => {
-                outC.style.transition = 'none';
-                outC.style.opacity    = '';
-                outC.style.transform  = '';
-                isScrolling = false;
-            }, 720);
-        }
-
-        function getNearestSectionIndex() {
-            let nearest = 0, minDist = Infinity;
-            sections.forEach((s, i) => {
-                const dist = Math.abs(window.scrollY - s.offsetTop);
-                if (dist < minDist) { minDist = dist; nearest = i; }
+        // ── Section visibility → s-visible class ──
+        const sectionIO = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.intersectionRatio >= 0.5) {
+                    e.target.classList.add('s-visible');
+                    // Trigger staggered reveal for elements inside
+                    e.target.querySelectorAll('.reveal:not(.visible)').forEach(el => {
+                        el.classList.add('visible');
+                    });
+                } else {
+                    e.target.classList.remove('s-visible');
+                }
             });
-            return nearest;
-        }
+        }, { threshold: 0.5 });
 
-        // Desktop: intercept wheel
+        sections.forEach(s => sectionIO.observe(s));
+
+        // ── Desktop wheel: one section at a time, browser handles smooth scroll ──
         if (window.innerWidth >= 1024) {
-            document.addEventListener('wheel', (e) => {
+            document.addEventListener('wheel', e => {
                 e.preventDefault();
-                if (isScrolling) return;
-                // Sync with actual scroll position before navigating
-                currentIndex = getNearestSectionIndex();
-                if (e.deltaY >  30) goToSection(currentIndex + 1);
-                if (e.deltaY < -30) goToSection(currentIndex - 1);
+                if (locked) return;
+
+                const cur = nearest();
+                const dir = e.deltaY > 20 ? 1 : e.deltaY < -20 ? -1 : 0;
+                if (dir === 0) return;
+
+                const target = Math.min(Math.max(cur + dir, 0), sections.length - 1);
+                if (target === cur) return;
+
+                locked = true;
+                sections[target].scrollIntoView({ behavior: 'smooth', block: 'start' });
+                // Reset reveals in target so they re-animate on entry
+                sections[target].querySelectorAll('.reveal').forEach(el => el.classList.remove('visible'));
+
+                setTimeout(() => { locked = false; }, 950);
             }, { passive: false });
 
-            // Keyboard arrows
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'ArrowDown' || e.key === 'PageDown') goToSection(currentIndex + 1);
-                if (e.key === 'ArrowUp'   || e.key === 'PageUp')   goToSection(currentIndex - 1);
+            document.addEventListener('keydown', e => {
+                const map = { ArrowDown: 1, PageDown: 1, ArrowUp: -1, PageUp: -1 };
+                const dir = map[e.key];
+                if (!dir || locked) return;
+                e.preventDefault();
+                const target = Math.min(Math.max(nearest() + dir, 0), sections.length - 1);
+                locked = true;
+                sections[target].scrollIntoView({ behavior: 'smooth', block: 'start' });
+                sections[target].querySelectorAll('.reveal').forEach(el => el.classList.remove('visible'));
+                setTimeout(() => { locked = false; }, 950);
             });
         }
 
-        // Initial hero reveal
-        sections[0].querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
-
-        // Nav tint on scroll
+        // ── Nav tint ──
         const nav = document.getElementById('main-nav');
-        window.addEventListener('scroll', () => {
-            nav.classList.toggle('scrolled', window.scrollY > 50);
-        });
+        window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 50));
     </script>
     </script>
 </body>
