@@ -1136,11 +1136,22 @@
             }, 820);
         }
 
+        function getNearestSectionIndex() {
+            let nearest = 0, minDist = Infinity;
+            sections.forEach((s, i) => {
+                const dist = Math.abs(window.scrollY - s.offsetTop);
+                if (dist < minDist) { minDist = dist; nearest = i; }
+            });
+            return nearest;
+        }
+
         // Desktop: intercept wheel
         if (window.innerWidth >= 1024) {
             document.addEventListener('wheel', (e) => {
                 e.preventDefault();
                 if (isScrolling) return;
+                // Sync with actual scroll position before navigating
+                currentIndex = getNearestSectionIndex();
                 if (e.deltaY >  30) goToSection(currentIndex + 1);
                 if (e.deltaY < -30) goToSection(currentIndex - 1);
             }, { passive: false });
