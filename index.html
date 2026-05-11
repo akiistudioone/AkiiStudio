@@ -1030,7 +1030,7 @@
         /* Cards column — depth stack (one behind the other) */
         .problem-cards {
             position: relative;
-            min-height: 340px;
+            min-height: 420px;
         }
 
         .problem-card {
@@ -1039,7 +1039,7 @@
             position: absolute;
             width: 76%;
             left: 12%;
-            height: 280px;
+            height: 360px;
             display: flex;
             flex-direction: column;
             backdrop-filter: blur(20px);
@@ -1218,7 +1218,16 @@
                         transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .pc-card-3.pc-visible .pc-time-display { opacity: 1; transform: scale(1); }
+        .pc-card-3.pc-visible .pc-time-display,
+        .pc-time-card.pc-visible .pc-time-display { opacity: 1; transform: scale(1); }
+
+        /* Center content vertically in counter and time cards */
+        .pc-counter-card { justify-content: center; }
+        .pc-time-card {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
 
         .pc-time-sub {
             font-family: 'DM Sans', sans-serif;
@@ -1382,7 +1391,7 @@
                         <span class="pc-body">Weniger Abstimmung. Mehr Umsetzung.</span>
                     </div>
                     <!-- Card 3: Time Saved -->
-                    <div class="problem-card pc-card-3">
+                    <div class="problem-card pc-card-3 pc-time-card">
                         <span class="pc-label">Zeit zurück</span>
                         <span class="pc-time-display">Ø 6 Std.</span>
                         <span class="pc-time-sub">pro Woche</span>
