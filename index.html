@@ -231,17 +231,111 @@
         .nav-cta {
             font-family: 'DM Sans', sans-serif;
             font-weight: 500;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: var(--white);
             background: var(--ink);
-            padding: 0.45rem 1.3rem;
-            border-radius: 20px;
+            padding: 0.5rem 1.25rem;
+            border-radius: 12px;
             text-decoration: none;
             white-space: nowrap;
-            transition: opacity 0.2s ease;
+            border: none;
+            cursor: pointer;
+            transition: box-shadow 0.3s var(--transition-smooth), background 0.3s var(--transition-smooth);
         }
 
-        .nav-cta:hover { opacity: 0.85; }
+        .nav-cta:hover {
+            box-shadow: 0 0 0 3px rgba(200, 255, 87, 0.5), 0 0 20px rgba(200, 255, 87, 0.25);
+        }
+
+        /* ── Contact Modal ── */
+        .modal-overlay {
+            position: fixed; inset: 0; z-index: 1000;
+            background: rgba(0,0,0,0.55);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+        .modal-box {
+            background: #fff;
+            border-radius: 20px;
+            padding: 2.5rem 2.5rem 2rem;
+            width: min(520px, 92vw);
+            position: relative;
+            transform: translateY(24px) scale(0.97);
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 24px 80px rgba(0,0,0,0.18);
+        }
+        .modal-overlay.open .modal-box {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-close {
+            position: absolute; top: 1.1rem; right: 1.25rem;
+            background: none; border: none; cursor: pointer;
+            font-size: 1.4rem; line-height: 1; color: #999;
+            transition: color 0.2s;
+        }
+        .modal-close:hover { color: #111; }
+
+        .modal-title {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.35rem; font-weight: 700;
+            color: var(--ink); margin-bottom: 0.4rem;
+        }
+        .modal-sub {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.88rem; color: #888;
+            margin-bottom: 1.75rem;
+        }
+
+        .modal-field { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1.1rem; }
+        .modal-field label {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.82rem; font-weight: 500; color: #555;
+        }
+        .modal-field input,
+        .modal-field textarea {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.92rem; color: var(--ink);
+            background: #f6f6f6;
+            border: 1.5px solid transparent;
+            border-radius: 10px;
+            padding: 0.7rem 0.95rem;
+            outline: none;
+            transition: border-color 0.2s, background 0.2s;
+            resize: vertical;
+        }
+        .modal-field input:focus,
+        .modal-field textarea:focus {
+            border-color: var(--ink);
+            background: #fff;
+        }
+        .modal-field textarea { min-height: 110px; }
+
+        .modal-submit {
+            width: 100%; margin-top: 0.5rem;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600; font-size: 0.95rem;
+            color: var(--white); background: var(--ink);
+            border: none; border-radius: 12px;
+            padding: 0.85rem 1.5rem;
+            cursor: pointer;
+            transition: box-shadow 0.3s var(--transition-smooth);
+        }
+        .modal-submit:hover {
+            box-shadow: 0 0 0 3px rgba(200, 255, 87, 0.5), 0 0 20px rgba(200, 255, 87, 0.25);
+        }
+        .modal-success {
+            text-align: center; padding: 1.5rem 0 0.5rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem; color: #444;
+            display: none;
+        }
+        .modal-success strong { display: block; font-size: 1.2rem; margin-bottom: 0.4rem; color: var(--ink); }
 
         .nav-hamburger {
             display: none;
@@ -1113,13 +1207,12 @@
             Akii Studio
         </a>
         <ul class="nav-links">
-            <li><a href="#foundation">Digital Foundation</a></li>
-            <li><a href="#strategy">Digital Strategy</a></li>
-            <li><a href="#automation">Automation &amp; AI</a></li>
-            <li><a href="#systems">Custom Systems</a></li>
+            <li><a href="#leistungen">Leistungen</a></li>
+            <li><a href="#workshop">Einstieg</a></li>
+            <li><a href="#ueber-uns">Über uns</a></li>
         </ul>
         <div class="nav-right">
-            <a href="#workshop" class="nav-cta">Workshop starten</a>
+            <button class="nav-cta" id="nav-cta-btn">Kostenlose Ersteinschätzung</button>
             <button class="nav-hamburger" aria-label="Menü öffnen" aria-expanded="false">
                 <span></span><span></span><span></span>
             </button>
@@ -1127,12 +1220,11 @@
     </nav>
     <div class="nav-mobile-panel" id="nav-mobile-panel">
         <ul class="nav-mobile-links">
-            <li><a href="#foundation">Digital Foundation</a></li>
-            <li><a href="#strategy">Digital Strategy</a></li>
-            <li><a href="#automation">Automation &amp; AI</a></li>
-            <li><a href="#systems">Custom Systems</a></li>
+            <li><a href="#leistungen">Leistungen</a></li>
+            <li><a href="#workshop">Einstieg</a></li>
+            <li><a href="#ueber-uns">Über uns</a></li>
         </ul>
-        <a href="#workshop" class="nav-cta">Workshop starten</a>
+        <button class="nav-cta" id="nav-cta-btn-mobile">Kostenlose Ersteinschätzung</button>
     </div>
 
     <main>
@@ -1148,7 +1240,7 @@
                     </p>
                     <div class="hero-ctas reveal reveal-delay-4" style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.5rem; margin-bottom: 2rem;">
                         <a href="#workshop" class="btn btn-primary">Digital Clarity Workshop starten</a>
-                        <a href="#philosophie" class="btn btn-outline">Wie wir arbeiten</a>
+                        <a href="#journey" class="btn btn-outline">Wie wir arbeiten</a>
                     </div>
                 </div>
             </div>
@@ -1239,44 +1331,12 @@
             </div>
         </section>
 
-        <!-- Section 4: Zusammenarbeit -->
-        <section id="journey">
-            <div class="container">
-                <span class="uppercase slate reveal">WIE WIR ZUSAMMENARBEITEN</span>
-                <h2 class="reveal reveal-delay-1">Eine gemeinsame Reise.</h2>
-                <p class="reveal reveal-delay-2">Nicht wir für dich — sondern wir mit dir.</p>
-                
-                <div class="journey-grid">
-                    <div class="card journey-card highlight reveal reveal-delay-1">
-                        <span class="card-num">01</span>
-                        <h3 class="card-title">Digital Clarity Workshop</h3>
-                        <p style="font-size: 0.9rem;">Der Startpunkt für jedes Projekt. Wir ordnen das Chaos.</p>
-                    </div>
-                    <div class="card journey-card reveal reveal-delay-2">
-                        <span class="card-num">02</span>
-                        <h3 class="card-title">Digital Blueprint</h3>
-                        <p style="font-size: 0.9rem;">Die technische und strategische Roadmap für die Umsetzung.</p>
-                    </div>
-                    <div class="card journey-card reveal reveal-delay-3">
-                        <span class="card-num">03</span>
-                        <h3 class="card-title">Digital Build</h3>
-                        <p style="font-size: 0.9rem;">Präzise Entwicklung Ihrer individuellen Systeme.</p>
-                    </div>
-                    <div class="card journey-card reveal reveal-delay-4">
-                        <span class="card-num">04</span>
-                        <h3 class="card-title">Digital Evolution</h3>
-                        <p style="font-size: 0.9rem;">Kontinuierliche Optimierung und Begleitung.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section 5: Leistungen -->
+        <!-- Section 3: Leistungen -->
         <section id="leistungen">
             <div class="container">
                 <span class="uppercase slate reveal">LEISTUNGEN</span>
                 <h2 class="reveal reveal-delay-1">Was wir aufbauen.</h2>
-                
+
                 <div class="grid-2">
                     <div class="card reveal reveal-delay-1">
                         <h3 class="card-title">Digital Foundation</h3>
@@ -1313,6 +1373,38 @@
                             <li>Interne Dashboards</li>
                             <li>Kunden-Portale</li>
                         </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Zusammenarbeit -->
+        <section id="journey">
+            <div class="container">
+                <span class="uppercase slate reveal">WIE WIR ZUSAMMENARBEITEN</span>
+                <h2 class="reveal reveal-delay-1">Eine gemeinsame Reise.</h2>
+                <p class="reveal reveal-delay-2">Nicht wir für dich — sondern wir mit dir.</p>
+                
+                <div class="journey-grid">
+                    <div class="card journey-card highlight reveal reveal-delay-1">
+                        <span class="card-num">01</span>
+                        <h3 class="card-title">Digital Clarity Workshop</h3>
+                        <p style="font-size: 0.9rem;">Der Startpunkt für jedes Projekt. Wir ordnen das Chaos.</p>
+                    </div>
+                    <div class="card journey-card reveal reveal-delay-2">
+                        <span class="card-num">02</span>
+                        <h3 class="card-title">Digital Blueprint</h3>
+                        <p style="font-size: 0.9rem;">Die technische und strategische Roadmap für die Umsetzung.</p>
+                    </div>
+                    <div class="card journey-card reveal reveal-delay-3">
+                        <span class="card-num">03</span>
+                        <h3 class="card-title">Digital Build</h3>
+                        <p style="font-size: 0.9rem;">Präzise Entwicklung Ihrer individuellen Systeme.</p>
+                    </div>
+                    <div class="card journey-card reveal reveal-delay-4">
+                        <span class="card-num">04</span>
+                        <h3 class="card-title">Digital Evolution</h3>
+                        <p style="font-size: 0.9rem;">Kontinuierliche Optimierung und Begleitung.</p>
                     </div>
                 </div>
             </div>
@@ -1404,6 +1496,34 @@
             </div>
         </section>
     </main>
+
+    <!-- Contact Modal -->
+    <div class="modal-overlay" id="contact-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal-box">
+            <button class="modal-close" id="modal-close-btn" aria-label="Schließen">&#x2715;</button>
+            <div class="modal-title" id="modal-title">Kostenlose Ersteinschätzung</div>
+            <div class="modal-sub">Kein Pitch. Kein Druck. Rein in den Dialog.</div>
+            <form id="contact-form" novalidate>
+                <div class="modal-field">
+                    <label for="modal-name">Name *</label>
+                    <input type="text" id="modal-name" name="name" placeholder="Max Mustermann" required>
+                </div>
+                <div class="modal-field">
+                    <label for="modal-email">E-Mail *</label>
+                    <input type="email" id="modal-email" name="email" placeholder="max@beispiel.de" required>
+                </div>
+                <div class="modal-field">
+                    <label for="modal-message">Erzähl uns, wobei wir gemeinsam Klarheit schaffen können *</label>
+                    <textarea id="modal-message" name="message" placeholder="Beschreib kurz deine Situation, Herausforderung oder dein Ziel …" required></textarea>
+                </div>
+                <button type="submit" class="modal-submit">Nachricht senden →</button>
+            </form>
+            <div class="modal-success" id="modal-success">
+                <strong>Vielen Dank!</strong>
+                Wir melden uns innerhalb von 24 Stunden bei dir.
+            </div>
+        </div>
+    </div>
 
     <footer>
         <p>© 2025 Akii Studio</p>
@@ -1662,6 +1782,50 @@
                 else if (!e.isIntersecting && isVisible) { isVisible = false; hideCards(); }
             });
         }, { threshold: 0.25 }).observe(container);
+    })();
+
+    // ── Smooth scroll for nav links ──
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
+        link.addEventListener('click', e => {
+            const target = document.querySelector(link.getAttribute('href'));
+            if (!target) return;
+            e.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    });
+
+    // ── Contact modal ──
+    (function initModal() {
+        const overlay = document.getElementById('contact-modal');
+        const form    = document.getElementById('contact-form');
+        const success = document.getElementById('modal-success');
+        const ctaBtns = [
+            document.getElementById('nav-cta-btn'),
+            document.getElementById('nav-cta-btn-mobile'),
+        ].filter(Boolean);
+
+        function openModal() {
+            overlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+            overlay.querySelector('input, textarea').focus();
+        }
+        function closeModal() {
+            overlay.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        ctaBtns.forEach(btn => btn.addEventListener('click', openModal));
+        document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+        overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            if (!form.checkValidity()) { form.reportValidity(); return; }
+            form.style.display = 'none';
+            success.style.display = 'block';
+            setTimeout(closeModal, 3000);
+        });
     })();
 
     </script>
