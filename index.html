@@ -908,16 +908,17 @@
             line-height: 1.8;
         }
 
-        /* Cards column */
+        /* Cards column — depth stack (one behind the other) */
         .problem-cards {
             position: relative;
-            display: flex;
-            flex-direction: column;
+            min-height: 320px;
         }
 
         .problem-card {
             --pc-rotate: 0deg;
             --pc-scale: 1;
+            position: absolute;
+            width: 100%;
             background: rgba(255,255,255,0.12);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
@@ -925,22 +926,22 @@
             border-radius: 16px;
             padding: 20px 22px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.25);
-            margin-bottom: -24px;
             opacity: 0;
-            transform: translateY(30px) rotate(var(--pc-rotate)) scale(var(--pc-scale));
+            transform: translateY(30px) scale(var(--pc-scale)) rotate(var(--pc-rotate));
             transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
                         transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
             will-change: transform, opacity;
+            transform-origin: top center;
         }
 
-        .problem-card:last-child { margin-bottom: 0; }
-        .pc-card-1 { --pc-rotate: -0.5deg; --pc-scale: 1;    z-index: 3; }
-        .pc-card-2 { --pc-rotate: 0deg;    --pc-scale: 0.98;  z-index: 2; }
-        .pc-card-3 { --pc-rotate: 0.5deg;  --pc-scale: 0.96;  z-index: 1; }
+        /* card-3 = furthest back, card-1 = front */
+        .pc-card-3 { --pc-rotate: 0.5deg;  --pc-scale: 0.93; z-index: 1; top: 0;   }
+        .pc-card-2 { --pc-rotate: 0deg;    --pc-scale: 0.97; z-index: 2; top: 18px; }
+        .pc-card-1 { --pc-rotate: -0.5deg; --pc-scale: 1;    z-index: 3; top: 36px; }
 
         .problem-card.pc-visible {
             opacity: 1;
-            transform: translateY(0) rotate(var(--pc-rotate)) scale(var(--pc-scale));
+            transform: translateY(0) scale(var(--pc-scale)) rotate(var(--pc-rotate));
         }
 
         .pc-label {
@@ -1092,8 +1093,9 @@
             .problem-headline { font-size: 34px; }
             .problem-pains { margin-top: 28px; }
             .problem-pains li { font-size: 15px; }
-            .problem-card { padding: 18px 20px; margin-bottom: 16px; }
-            .problem-card:last-child { margin-bottom: 0; }
+            /* Revert to flow layout on mobile */
+            .problem-cards { min-height: 0; display: flex; flex-direction: column; gap: 12px; }
+            .problem-card { position: relative; top: auto; padding: 18px 20px; }
             .pc-card-1, .pc-card-2, .pc-card-3 { --pc-rotate: 0deg; --pc-scale: 1; }
         }
 
