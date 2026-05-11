@@ -870,6 +870,235 @@
             background: var(--lime);
             box-shadow: 0 0 0 3px rgba(200, 255, 87, 0.45), 0 0 48px rgba(200, 255, 87, 0.2);
         }
+
+        /* ── Problem Section Redesign ── */
+        #problem {
+            height: auto;
+            min-height: 0;
+            padding: 120px clamp(1.5rem, 5vw, 4rem);
+            background: #EEEEF0;
+            display: block;
+            overflow: visible;
+            scroll-snap-align: none;
+            scroll-snap-stop: normal;
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: clamp(2rem, 5vw, 5rem);
+            align-items: center;
+        }
+
+        .problem-headline {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 48px;
+            font-weight: 700;
+            color: #0E0E0F;
+            line-height: 1.1;
+        }
+
+        .problem-pains {
+            list-style: none;
+            padding: 0;
+            margin: 32px 0 0;
+        }
+
+        .problem-pains li {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 18px;
+            font-weight: 400;
+            color: #6B6B74;
+            line-height: 1.7;
+        }
+
+        .problem-cards {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 20px;
+        }
+
+        .problem-card {
+            --pc-rotate: 0deg;
+            background: #fff;
+            border-radius: 20px;
+            padding: 28px;
+            box-shadow: 0 4px 32px rgba(0,0,0,0.08);
+            margin-bottom: -20px;
+            opacity: 0;
+            transform: translateY(30px) rotate(var(--pc-rotate));
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform, opacity;
+        }
+
+        .problem-card:last-child { margin-bottom: 0; }
+        .pc-card-1 { --pc-rotate: -1.5deg; z-index: 3; }
+        .pc-card-2 { --pc-rotate: 1deg;    z-index: 2; }
+        .pc-card-3 { --pc-rotate: -0.5deg; z-index: 1; }
+
+        .problem-card.pc-visible {
+            opacity: 1;
+            transform: translateY(0) rotate(var(--pc-rotate));
+        }
+
+        .pc-label {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            color: #6B6B74;
+            display: block;
+            margin-bottom: 16px;
+        }
+
+        /* Card 1: Chat */
+        .pc-chat { display: flex; flex-direction: column; gap: 10px; }
+
+        .chat-bubble {
+            max-width: 78%;
+            padding: 10px 14px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 1.5;
+            opacity: 0;
+            transform: translateY(8px);
+        }
+
+        .cb-user {
+            background: #0E0E0F;
+            color: #fff;
+            border-radius: 14px 14px 2px 14px;
+            align-self: flex-end;
+            text-align: right;
+        }
+
+        .cb-assistant {
+            background: #F4F4F5;
+            color: #0E0E0F;
+            border-radius: 14px 14px 14px 2px;
+            align-self: flex-start;
+        }
+
+        @keyframes pc-bubble-in {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .pc-card-1.pc-visible .chat-bubble:nth-child(1) {
+            animation: pc-bubble-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0ms both;
+        }
+        .pc-card-1.pc-visible .chat-bubble:nth-child(2) {
+            animation: pc-bubble-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) 600ms both;
+        }
+        .pc-card-1.pc-visible .chat-bubble:nth-child(3) {
+            animation: pc-bubble-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) 1200ms both;
+        }
+
+        /* Card 2: Counter */
+        .pc-metric-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .pc-counter {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 56px;
+            font-weight: 700;
+            color: #0E0E0F;
+            line-height: 1;
+        }
+
+        .pc-arrow-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #C8FF57;
+            color: #0E0E0F;
+            font-size: 16px;
+            font-weight: 700;
+            width: 32px;
+            height: 32px;
+            border-radius: 50px;
+        }
+
+        .pc-bar-track {
+            height: 6px;
+            background: #EEEEF0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .pc-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: #0E0E0F;
+            border-radius: 3px;
+            transition: width 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .pc-body {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: #6B6B74;
+            display: block;
+            margin: 16px 0 0;
+            line-height: 1.5;
+        }
+
+        /* Card 3: Time */
+        .pc-time-display {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 52px;
+            font-weight: 700;
+            color: #0E0E0F;
+            line-height: 1;
+            display: block;
+            opacity: 0;
+            transform: scale(0.85);
+            transform-origin: left center;
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .pc-card-3.pc-visible .pc-time-display { opacity: 1; transform: scale(1); }
+
+        .pc-time-sub {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            color: #6B6B74;
+            display: block;
+            margin: 4px 0 0;
+        }
+
+        .pc-time-body {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            color: #6B6B74;
+            display: block;
+            margin: 16px 0 0;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 1023px) {
+            #problem { padding: 80px 1.5rem; min-height: 0; height: auto; }
+        }
+
+        @media (max-width: 767px) {
+            #problem { padding: 80px 1.25rem; }
+            .problem-grid { grid-template-columns: 1fr; }
+            .problem-text { padding-bottom: 48px; }
+            .problem-headline { font-size: 32px; }
+            .problem-card { padding: 20px; margin-bottom: 16px; }
+            .problem-card:last-child { margin-bottom: 0; }
+            .pc-card-1, .pc-card-2, .pc-card-3 { --pc-rotate: 0deg; }
+        }
+
     </style>
 </head>
 <body>
@@ -962,25 +1191,45 @@
 
         <!-- Section 2: Problem -->
         <section id="problem">
-            <div class="container">
-                <span class="uppercase slate reveal" style="margin-bottom: 1.5rem; display: block;">WARUM PROJEKTE SCHEITERN</span>
-                <h2 class="reveal reveal-delay-1" style="margin-bottom: 3rem;">Kennst du das?</h2>
-                
-                <div class="grid-3">
-                    <div class="card reveal reveal-delay-1">
-                        <span class="card-num">01</span>
-                        <h3 class="card-title">Jeder sagt etwas anderes.</h3>
-                        <p>Agenturen, Entwickler, Tools — niemand erklärt das Gesamtbild. Am Ende fehlt die Orientierung.</p>
+            <div class="problem-grid">
+                <!-- Left: text -->
+                <div class="problem-text">
+                    <div class="problem-headline">Zu viele Meinungen. Zu wenig System.</div>
+                    <ul class="problem-pains">
+                        <li>— Agenturen, Entwickler, Tools — niemand sieht das Gesamtbild.</li>
+                        <li>— Prozesse laufen manuell, weil nie Zeit war, das zu ändern.</li>
+                        <li>— Du investierst — aber das eigentliche Problem bleibt.</li>
+                    </ul>
+                </div>
+                <!-- Right: animated cards -->
+                <div class="problem-cards">
+                    <!-- Card 1: Chat -->
+                    <div class="problem-card pc-card-1">
+                        <span class="pc-label">Akii Studio</span>
+                        <div class="pc-chat">
+                            <div class="chat-bubble cb-user">Ich krieg kein Angebot mehr raus heute, bin im Außendienst den ganzen Tag.</div>
+                            <div class="chat-bubble cb-assistant">Kein Problem — ich hab dein letztes Angebot als Vorlage. Soll ich es für Müller GmbH anpassen und direkt versenden?</div>
+                            <div class="chat-bubble cb-user">Ja, mach das. ✓</div>
+                        </div>
                     </div>
-                    <div class="card reveal reveal-delay-2">
-                        <span class="card-num">02</span>
-                        <h3 class="card-title">Prozesse laufen manuell.</h3>
-                        <p>Nicht aus Notwendigkeit — sondern weil nie die Zeit war, sie sauber zu strukturieren.</p>
+                    <!-- Card 2: Efficiency Counter -->
+                    <div class="problem-card pc-card-2 pc-counter-card">
+                        <span class="pc-label">Effizienz</span>
+                        <div class="pc-metric-row">
+                            <span class="pc-counter" data-target="74">0%</span>
+                            <span class="pc-arrow-pill">↑</span>
+                        </div>
+                        <div class="pc-bar-track">
+                            <div class="pc-bar-fill"></div>
+                        </div>
+                        <span class="pc-body">Weniger Abstimmung. Mehr Umsetzung.</span>
                     </div>
-                    <div class="card reveal reveal-delay-3">
-                        <span class="card-num">03</span>
-                        <h3 class="card-title">Geld ohne Wirkung.</h3>
-                        <p>Website, Tools, Beratung — das eigentliche Problem bleibt, weil das Fundament fehlt.</p>
+                    <!-- Card 3: Time Saved -->
+                    <div class="problem-card pc-card-3">
+                        <span class="pc-label">Zeit zurück</span>
+                        <span class="pc-time-display">Ø 6 Std.</span>
+                        <span class="pc-time-sub">pro Woche</span>
+                        <span class="pc-time-body">Die du nicht mehr mit Verwaltung verbringst.</span>
                     </div>
                 </div>
             </div>
@@ -1421,6 +1670,76 @@
             sections.forEach(s => { prepare(s); io.observe(s); });
         }
     })();
+
+    // ── Problem Section Animations ──
+    (function initProblemSection() {
+        const cards = [...document.querySelectorAll('.problem-card')];
+        const container = document.querySelector('.problem-cards');
+        if (!cards.length || !container) return;
+
+        const STAGGER = [0, 150, 300];
+        let timeouts = [];
+        let isVisible = false;
+
+        const easeOut = t => 1 - Math.pow(1 - t, 3);
+
+        function animateCounter(card) {
+            const el = card.querySelector('.pc-counter');
+            const bar = card.querySelector('.pc-bar-fill');
+            if (!el) return;
+            const target = parseInt(el.dataset.target || '74', 10);
+            const duration = 1800;
+            let startTs = null;
+
+            if (bar) {
+                bar.style.transition = 'none';
+                bar.style.width = '0%';
+                void bar.offsetHeight;
+                bar.style.transition = '';
+                bar.style.width = target + '%';
+            }
+
+            const step = ts => {
+                if (!startTs) startTs = ts;
+                const t = Math.min((ts - startTs) / duration, 1);
+                el.textContent = Math.round(easeOut(t) * target) + '%';
+                if (t < 1) card._raf = requestAnimationFrame(step);
+            };
+            card._raf = requestAnimationFrame(step);
+        }
+
+        function showCards() {
+            cards.forEach((card, i) => {
+                const t = setTimeout(() => {
+                    card.classList.add('pc-visible');
+                    if (card.classList.contains('pc-counter-card')) animateCounter(card);
+                }, STAGGER[i]);
+                timeouts.push(t);
+            });
+        }
+
+        function hideCards() {
+            timeouts.forEach(clearTimeout);
+            timeouts = [];
+            cards.forEach(card => {
+                if (card._raf) { cancelAnimationFrame(card._raf); card._raf = null; }
+                card.classList.remove('pc-visible');
+                void card.offsetHeight;
+                const el = card.querySelector('.pc-counter');
+                if (el) el.textContent = '0%';
+                const bar = card.querySelector('.pc-bar-fill');
+                if (bar) { bar.style.transition = 'none'; bar.style.width = '0%'; }
+            });
+        }
+
+        new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting && !isVisible) { isVisible = true; showCards(); }
+                else if (!e.isIntersecting && isVisible) { isVisible = false; hideCards(); }
+            });
+        }, { threshold: 0.25 }).observe(container);
+    })();
+
     </script>
     </script>
 </body>
