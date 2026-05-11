@@ -911,7 +911,7 @@
         /* Cards column — depth stack (one behind the other) */
         .problem-cards {
             position: relative;
-            min-height: 320px;
+            min-height: 360px;
         }
 
         .problem-card {
@@ -919,25 +919,28 @@
             --pc-scale: 1;
             position: absolute;
             width: 100%;
-            background: rgba(255,255,255,0.12);
+            min-height: 200px;
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255,255,255,0.18);
-            border-radius: 16px;
-            padding: 20px 22px;
+            border-radius: 20px;
+            padding: 24px 26px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.25);
             opacity: 0;
             transform: translateY(30px) scale(var(--pc-scale)) rotate(var(--pc-rotate));
             transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-                        transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-            will-change: transform, opacity;
+                        transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                        filter 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                        background 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                        top 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform, opacity, filter;
             transform-origin: top center;
         }
 
-        /* card-3 = furthest back, card-1 = front */
-        .pc-card-3 { --pc-rotate: 0.5deg;  --pc-scale: 0.93; z-index: 1; top: 0;   }
-        .pc-card-2 { --pc-rotate: 0deg;    --pc-scale: 0.97; z-index: 2; top: 18px; }
-        .pc-card-1 { --pc-rotate: -0.5deg; --pc-scale: 1;    z-index: 3; top: 36px; }
+        /* card-3 = furthest back (lighter, blurrier), card-1 = front (darkest, crisp) */
+        .pc-card-3 { --pc-rotate: 0.5deg;  --pc-scale: 0.92; z-index: 1; top: 0;    filter: blur(5px);  background: rgba(255,255,255,0.22); }
+        .pc-card-2 { --pc-rotate: 0deg;    --pc-scale: 0.96; z-index: 2; top: 20px; filter: blur(2px);  background: rgba(255,255,255,0.15); }
+        .pc-card-1 { --pc-rotate: -0.5deg; --pc-scale: 1;    z-index: 3; top: 40px; filter: blur(0px);  background: rgba(255,255,255,0.09); }
 
         .problem-card.pc-visible {
             opacity: 1;
@@ -1095,8 +1098,8 @@
             .problem-pains li { font-size: 15px; }
             /* Revert to flow layout on mobile */
             .problem-cards { min-height: 0; display: flex; flex-direction: column; gap: 12px; }
-            .problem-card { position: relative; top: auto; padding: 18px 20px; }
-            .pc-card-1, .pc-card-2, .pc-card-3 { --pc-rotate: 0deg; --pc-scale: 1; }
+            .problem-card { position: relative; top: auto; padding: 18px 20px; min-height: 0; }
+            .pc-card-1, .pc-card-2, .pc-card-3 { --pc-rotate: 0deg; --pc-scale: 1; filter: none; }
         }
 
     </style>
@@ -1194,7 +1197,7 @@
             <div class="problem-grid">
                 <!-- Left: text -->
                 <div class="problem-text">
-                    <div class="problem-headline">Zu viele Meinungen. Zu wenig System.</div>
+                    <div class="problem-headline">Zu viele Meinungen.<br>Zu wenig System.</div>
                     <ul class="problem-pains">
                         <li>— Agenturen, Entwickler, Tools — niemand sieht das Gesamtbild.</li>
                         <li>— Prozesse laufen manuell, weil nie Zeit war, das zu ändern.</li>
@@ -1677,8 +1680,12 @@
         const container = document.querySelector('.problem-cards');
         if (!cards.length || !container) return;
 
+        const SLOT_CLASSES = ['pc-card-1', 'pc-card-2', 'pc-card-3'];
         const STAGGER = [0, 150, 300];
+        // slotOrder[slotIdx] = cardIdx: which card occupies each slot (0=front, 1=mid, 2=back)
+        let slotOrder = [0, 1, 2];
         let timeouts = [];
+        let cycleInterval = null;
         let isVisible = false;
 
         const easeOut = t => 1 - Math.pow(1 - t, 3);
@@ -1687,10 +1694,11 @@
             const el = card.querySelector('.pc-counter');
             const bar = card.querySelector('.pc-bar-fill');
             if (!el) return;
+            if (card._raf) { cancelAnimationFrame(card._raf); card._raf = null; }
             const target = parseInt(el.dataset.target || '74', 10);
             const duration = 1800;
             let startTs = null;
-
+            el.textContent = '0%';
             if (bar) {
                 bar.style.transition = 'none';
                 bar.style.width = '0%';
@@ -1698,7 +1706,6 @@
                 bar.style.transition = '';
                 bar.style.width = target + '%';
             }
-
             const step = ts => {
                 if (!startTs) startTs = ts;
                 const t = Math.min((ts - startTs) / duration, 1);
@@ -1708,7 +1715,23 @@
             card._raf = requestAnimationFrame(step);
         }
 
+        function applySlots() {
+            SLOT_CLASSES.forEach(cls => cards.forEach(c => c.classList.remove(cls)));
+            slotOrder.forEach((cardIdx, slotIdx) => {
+                cards[cardIdx].classList.add(SLOT_CLASSES[slotIdx]);
+            });
+        }
+
+        function cycleCards() {
+            // Rotate: middle→front, back→middle, front→back
+            slotOrder = [slotOrder[1], slotOrder[2], slotOrder[0]];
+            applySlots();
+            const frontCard = cards[slotOrder[0]];
+            if (frontCard.classList.contains('pc-counter-card')) animateCounter(frontCard);
+        }
+
         function showCards() {
+            applySlots();
             cards.forEach((card, i) => {
                 const t = setTimeout(() => {
                     card.classList.add('pc-visible');
@@ -1716,11 +1739,13 @@
                 }, STAGGER[i]);
                 timeouts.push(t);
             });
+            cycleInterval = setInterval(cycleCards, 3000);
         }
 
         function hideCards() {
             timeouts.forEach(clearTimeout);
             timeouts = [];
+            if (cycleInterval) { clearInterval(cycleInterval); cycleInterval = null; }
             cards.forEach(card => {
                 if (card._raf) { cancelAnimationFrame(card._raf); card._raf = null; }
                 card.classList.remove('pc-visible');
@@ -1730,6 +1755,7 @@
                 const bar = card.querySelector('.pc-bar-fill');
                 if (bar) { bar.style.transition = 'none'; bar.style.width = '0%'; }
             });
+            slotOrder = [0, 1, 2];
         }
 
         new IntersectionObserver(entries => {
