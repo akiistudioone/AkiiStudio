@@ -918,29 +918,30 @@
             --pc-rotate: 0deg;
             --pc-scale: 1;
             position: absolute;
-            width: 100%;
-            min-height: 200px;
+            width: 76%;
+            left: 12%;
+            min-height: 180px;
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.18);
-            border-radius: 20px;
-            padding: 24px 26px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+            border: 1px solid rgba(255,255,255,0.16);
+            border-radius: 22px;
+            padding: 22px 24px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.3);
             opacity: 0;
-            transform: translateY(30px) scale(var(--pc-scale)) rotate(var(--pc-rotate));
-            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-                        transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-                        filter 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-                        background 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-                        top 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(20px) scale(var(--pc-scale)) rotate(var(--pc-rotate));
+            transition: opacity 1s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        filter 1s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        background 1s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        top 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             will-change: transform, opacity, filter;
             transform-origin: top center;
         }
 
         /* card-3 = furthest back (lighter, blurrier), card-1 = front (darkest, crisp) */
-        .pc-card-3 { --pc-rotate: 0.5deg;  --pc-scale: 0.92; z-index: 1; top: 0;    filter: blur(5px);  background: rgba(255,255,255,0.22); }
-        .pc-card-2 { --pc-rotate: 0deg;    --pc-scale: 0.96; z-index: 2; top: 20px; filter: blur(2px);  background: rgba(255,255,255,0.15); }
-        .pc-card-1 { --pc-rotate: -0.5deg; --pc-scale: 1;    z-index: 3; top: 40px; filter: blur(0px);  background: rgba(255,255,255,0.09); }
+        .pc-card-3 { --pc-rotate: 0.3deg;  --pc-scale: 0.93; z-index: 1; top: 0;    filter: blur(4px);  background: rgba(255,255,255,0.20); }
+        .pc-card-2 { --pc-rotate: 0deg;    --pc-scale: 0.965; z-index: 2; top: 14px; filter: blur(1.5px); background: rgba(255,255,255,0.14); }
+        .pc-card-1 { --pc-rotate: -0.3deg; --pc-scale: 1;    z-index: 3; top: 28px; filter: blur(0px);  background: rgba(255,255,255,0.09); }
 
         .problem-card.pc-visible {
             opacity: 1;
@@ -1098,7 +1099,7 @@
             .problem-pains li { font-size: 15px; }
             /* Revert to flow layout on mobile */
             .problem-cards { min-height: 0; display: flex; flex-direction: column; gap: 12px; }
-            .problem-card { position: relative; top: auto; padding: 18px 20px; min-height: 0; }
+            .problem-card { position: relative; top: auto; left: auto; width: 100%; padding: 18px 20px; min-height: 0; }
             .pc-card-1, .pc-card-2, .pc-card-3 { --pc-rotate: 0deg; --pc-scale: 1; filter: none; }
         }
 
@@ -1739,7 +1740,7 @@
                 }, STAGGER[i]);
                 timeouts.push(t);
             });
-            cycleInterval = setInterval(cycleCards, 3000);
+            cycleInterval = setInterval(cycleCards, 5000);
         }
 
         function hideCards() {
