@@ -872,8 +872,10 @@
         }
 
         /* ── Problem Section Redesign ── */
-        /* Only override what differs from the global section base */
-        #problem { background: #EEEEF0; }
+        /* ── Problem Section ── */
+        #problem {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        }
 
         .problem-grid {
             display: grid;
@@ -883,26 +885,27 @@
             width: 100%;
         }
 
+        /* Left column */
         .problem-headline {
             font-family: 'DM Sans', sans-serif;
-            font-size: clamp(2rem, 3.5vw, 3rem);
-            font-weight: 700;
-            color: #0E0E0F;
-            line-height: 1.1;
+            font-size: 52px;
+            font-weight: 800;
+            color: #ffffff;
+            line-height: 1.05;
         }
 
         .problem-pains {
             list-style: none;
             padding: 0;
-            margin: 28px 0 0;
+            margin: 40px 0 0;
         }
 
         .problem-pains li {
             font-family: 'DM Sans', sans-serif;
-            font-size: clamp(0.9rem, 1.1vw, 1rem);
+            font-size: 17px;
             font-weight: 400;
-            color: #6B6B74;
-            line-height: 1.7;
+            color: rgba(255,255,255,0.55);
+            line-height: 1.8;
         }
 
         /* Cards column */
@@ -914,37 +917,40 @@
 
         .problem-card {
             --pc-rotate: 0deg;
-            background: #1C1C1E;
-            border-radius: 20px;
-            padding: 22px;
-            box-shadow: 0 8px 40px rgba(0,0,0,0.45);
-            border: 1px solid rgba(255,255,255,0.06);
-            margin-bottom: -18px;
+            --pc-scale: 1;
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 16px;
+            padding: 20px 22px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+            margin-bottom: -24px;
             opacity: 0;
-            transform: translateY(30px) rotate(var(--pc-rotate));
+            transform: translateY(30px) rotate(var(--pc-rotate)) scale(var(--pc-scale));
             transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
                         transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
             will-change: transform, opacity;
         }
 
         .problem-card:last-child { margin-bottom: 0; }
-        .pc-card-1 { --pc-rotate: -1.5deg; z-index: 3; }
-        .pc-card-2 { --pc-rotate: 1deg;    z-index: 2; }
-        .pc-card-3 { --pc-rotate: -0.5deg; z-index: 1; }
+        .pc-card-1 { --pc-rotate: -0.5deg; --pc-scale: 1;    z-index: 3; }
+        .pc-card-2 { --pc-rotate: 0deg;    --pc-scale: 0.98;  z-index: 2; }
+        .pc-card-3 { --pc-rotate: 0.5deg;  --pc-scale: 0.96;  z-index: 1; }
 
         .problem-card.pc-visible {
             opacity: 1;
-            transform: translateY(0) rotate(var(--pc-rotate));
+            transform: translateY(0) rotate(var(--pc-rotate)) scale(var(--pc-scale));
         }
 
         .pc-label {
             font-family: 'DM Sans', sans-serif;
             font-size: 12px;
             font-weight: 500;
-            color: rgba(255,255,255,0.4);
+            color: rgba(255,255,255,0.55);
             display: block;
             margin-bottom: 14px;
-            letter-spacing: 0.01em;
+            letter-spacing: 0.02em;
         }
 
         /* Card 1: Chat */
@@ -962,17 +968,17 @@
         }
 
         .cb-user {
-            background: rgba(255,255,255,0.12);
-            color: rgba(255,255,255,0.92);
-            border-radius: 14px 14px 2px 14px;
+            background: rgba(255,255,255,0.18);
+            color: #ffffff;
+            border-radius: 12px 12px 4px 12px;
             align-self: flex-end;
             text-align: right;
         }
 
         .cb-assistant {
-            background: rgba(255,255,255,0.06);
-            color: rgba(255,255,255,0.78);
-            border-radius: 14px 14px 14px 2px;
+            background: rgba(255,255,255,0.10);
+            color: rgba(255,255,255,0.85);
+            border-radius: 12px 12px 12px 4px;
             align-self: flex-start;
         }
 
@@ -1000,9 +1006,9 @@
 
         .pc-counter {
             font-family: 'DM Sans', sans-serif;
-            font-size: 52px;
+            font-size: 48px;
             font-weight: 700;
-            color: #fff;
+            color: #ffffff;
             line-height: 1;
         }
 
@@ -1014,15 +1020,15 @@
             color: #0E0E0F;
             font-size: 15px;
             font-weight: 700;
-            width: 30px;
-            height: 30px;
+            width: 28px;
+            height: 28px;
             border-radius: 50px;
         }
 
         .pc-bar-track {
-            height: 5px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 3px;
+            height: 3px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 2px;
             overflow: hidden;
         }
 
@@ -1030,7 +1036,7 @@
             height: 100%;
             width: 0%;
             background: #C8FF57;
-            border-radius: 3px;
+            border-radius: 2px;
             transition: width 1.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
@@ -1038,7 +1044,7 @@
             font-family: 'DM Sans', sans-serif;
             font-size: 13px;
             font-weight: 400;
-            color: rgba(255,255,255,0.5);
+            color: rgba(255,255,255,0.6);
             display: block;
             margin: 14px 0 0;
             line-height: 1.5;
@@ -1049,7 +1055,7 @@
             font-family: 'DM Sans', sans-serif;
             font-size: 48px;
             font-weight: 700;
-            color: #fff;
+            color: #ffffff;
             line-height: 1;
             display: block;
             opacity: 0;
@@ -1065,7 +1071,7 @@
             font-family: 'DM Sans', sans-serif;
             font-size: 14px;
             font-weight: 400;
-            color: rgba(255,255,255,0.45);
+            color: rgba(255,255,255,0.55);
             display: block;
             margin: 4px 0 0;
         }
@@ -1074,19 +1080,21 @@
             font-family: 'DM Sans', sans-serif;
             font-size: 13px;
             font-weight: 400;
-            color: rgba(255,255,255,0.5);
+            color: rgba(255,255,255,0.6);
             display: block;
             margin: 14px 0 0;
-            line-height: 1.6;
+            line-height: 1.5;
         }
 
         @media (max-width: 767px) {
             .problem-grid { grid-template-columns: 1fr; gap: 2rem; }
             .problem-text { padding-bottom: 8px; }
-            .problem-headline { font-size: 32px; }
-            .problem-card { padding: 18px; margin-bottom: 12px; }
+            .problem-headline { font-size: 34px; }
+            .problem-pains { margin-top: 28px; }
+            .problem-pains li { font-size: 15px; }
+            .problem-card { padding: 18px 20px; margin-bottom: 16px; }
             .problem-card:last-child { margin-bottom: 0; }
-            .pc-card-1, .pc-card-2, .pc-card-3 { --pc-rotate: 0deg; }
+            .pc-card-1, .pc-card-2, .pc-card-3 { --pc-rotate: 0deg; --pc-scale: 1; }
         }
 
     </style>
