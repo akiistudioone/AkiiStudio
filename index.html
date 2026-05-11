@@ -872,27 +872,20 @@
         }
 
         /* ── Problem Section Redesign ── */
-        #problem {
-            height: auto;
-            min-height: 0;
-            padding: 120px clamp(1.5rem, 5vw, 4rem);
-            background: #EEEEF0;
-            display: block;
-            overflow: visible;
-            scroll-snap-align: none;
-            scroll-snap-stop: normal;
-        }
+        /* Only override what differs from the global section base */
+        #problem { background: #EEEEF0; }
 
         .problem-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: clamp(2rem, 5vw, 5rem);
             align-items: center;
+            width: 100%;
         }
 
         .problem-headline {
             font-family: 'DM Sans', sans-serif;
-            font-size: 48px;
+            font-size: clamp(2rem, 3.5vw, 3rem);
             font-weight: 700;
             color: #0E0E0F;
             line-height: 1.1;
@@ -901,31 +894,32 @@
         .problem-pains {
             list-style: none;
             padding: 0;
-            margin: 32px 0 0;
+            margin: 28px 0 0;
         }
 
         .problem-pains li {
             font-family: 'DM Sans', sans-serif;
-            font-size: 18px;
+            font-size: clamp(0.9rem, 1.1vw, 1rem);
             font-weight: 400;
             color: #6B6B74;
             line-height: 1.7;
         }
 
+        /* Cards column */
         .problem-cards {
             position: relative;
             display: flex;
             flex-direction: column;
-            padding-bottom: 20px;
         }
 
         .problem-card {
             --pc-rotate: 0deg;
-            background: #fff;
+            background: #1C1C1E;
             border-radius: 20px;
-            padding: 28px;
-            box-shadow: 0 4px 32px rgba(0,0,0,0.08);
-            margin-bottom: -20px;
+            padding: 22px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.45);
+            border: 1px solid rgba(255,255,255,0.06);
+            margin-bottom: -18px;
             opacity: 0;
             transform: translateY(30px) rotate(var(--pc-rotate));
             transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
@@ -945,38 +939,39 @@
 
         .pc-label {
             font-family: 'DM Sans', sans-serif;
-            font-size: 13px;
-            font-weight: 600;
-            color: #6B6B74;
+            font-size: 12px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.4);
             display: block;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
+            letter-spacing: 0.01em;
         }
 
         /* Card 1: Chat */
-        .pc-chat { display: flex; flex-direction: column; gap: 10px; }
+        .pc-chat { display: flex; flex-direction: column; gap: 8px; }
 
         .chat-bubble {
-            max-width: 78%;
-            padding: 10px 14px;
+            max-width: 82%;
+            padding: 9px 13px;
             font-family: 'DM Sans', sans-serif;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 400;
-            line-height: 1.5;
+            line-height: 1.45;
             opacity: 0;
             transform: translateY(8px);
         }
 
         .cb-user {
-            background: #0E0E0F;
-            color: #fff;
+            background: rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0.92);
             border-radius: 14px 14px 2px 14px;
             align-self: flex-end;
             text-align: right;
         }
 
         .cb-assistant {
-            background: #F4F4F5;
-            color: #0E0E0F;
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.78);
             border-radius: 14px 14px 14px 2px;
             align-self: flex-start;
         }
@@ -1000,14 +995,14 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
 
         .pc-counter {
             font-family: 'DM Sans', sans-serif;
-            font-size: 56px;
+            font-size: 52px;
             font-weight: 700;
-            color: #0E0E0F;
+            color: #fff;
             line-height: 1;
         }
 
@@ -1017,16 +1012,16 @@
             justify-content: center;
             background: #C8FF57;
             color: #0E0E0F;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
-            width: 32px;
-            height: 32px;
+            width: 30px;
+            height: 30px;
             border-radius: 50px;
         }
 
         .pc-bar-track {
-            height: 6px;
-            background: #EEEEF0;
+            height: 5px;
+            background: rgba(255,255,255,0.1);
             border-radius: 3px;
             overflow: hidden;
         }
@@ -1034,27 +1029,27 @@
         .pc-bar-fill {
             height: 100%;
             width: 0%;
-            background: #0E0E0F;
+            background: #C8FF57;
             border-radius: 3px;
             transition: width 1.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .pc-body {
             font-family: 'DM Sans', sans-serif;
-            font-size: 14px;
-            font-weight: 500;
-            color: #6B6B74;
+            font-size: 13px;
+            font-weight: 400;
+            color: rgba(255,255,255,0.5);
             display: block;
-            margin: 16px 0 0;
+            margin: 14px 0 0;
             line-height: 1.5;
         }
 
         /* Card 3: Time */
         .pc-time-display {
             font-family: 'DM Sans', sans-serif;
-            font-size: 52px;
+            font-size: 48px;
             font-weight: 700;
-            color: #0E0E0F;
+            color: #fff;
             line-height: 1;
             display: block;
             opacity: 0;
@@ -1068,33 +1063,28 @@
 
         .pc-time-sub {
             font-family: 'DM Sans', sans-serif;
-            font-size: 16px;
-            font-weight: 500;
-            color: #6B6B74;
+            font-size: 14px;
+            font-weight: 400;
+            color: rgba(255,255,255,0.45);
             display: block;
             margin: 4px 0 0;
         }
 
         .pc-time-body {
             font-family: 'DM Sans', sans-serif;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 400;
-            color: #6B6B74;
+            color: rgba(255,255,255,0.5);
             display: block;
-            margin: 16px 0 0;
+            margin: 14px 0 0;
             line-height: 1.6;
         }
 
-        @media (max-width: 1023px) {
-            #problem { padding: 80px 1.5rem; min-height: 0; height: auto; }
-        }
-
         @media (max-width: 767px) {
-            #problem { padding: 80px 1.25rem; }
-            .problem-grid { grid-template-columns: 1fr; }
-            .problem-text { padding-bottom: 48px; }
+            .problem-grid { grid-template-columns: 1fr; gap: 2rem; }
+            .problem-text { padding-bottom: 8px; }
             .problem-headline { font-size: 32px; }
-            .problem-card { padding: 20px; margin-bottom: 16px; }
+            .problem-card { padding: 18px; margin-bottom: 12px; }
             .problem-card:last-child { margin-bottom: 0; }
             .pc-card-1, .pc-card-2, .pc-card-3 { --pc-rotate: 0deg; }
         }
