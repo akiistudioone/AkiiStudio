@@ -965,16 +965,40 @@
             box-shadow: 0 0 0 3px rgba(200, 255, 87, 0.45), 0 0 48px rgba(200, 255, 87, 0.2);
         }
 
-        /* ── Problem Section Redesign ── */
         /* ── Problem Section ── */
         #problem {
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            background: var(--canvas);
+        }
+
+        .problem-bg-letter {
+            position: absolute;
+            right: -4%;
+            top: 50%;
+            transform: translateY(-50%);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 65vw;
+            color: rgba(0,0,0,0.028);
+            z-index: 0;
+            user-select: none;
+            pointer-events: none;
+            line-height: 1;
+        }
+
+        .problem-float-card {
+            position: relative; z-index: 1;
+            background: var(--ink);
+            border-radius: 28px;
+            padding: clamp(2rem, 3.5vw, 3rem) clamp(2rem, 4vw, 3.5rem);
+            box-shadow: 0 24px 80px rgba(0,0,0,0.18), 0 4px 24px rgba(0,0,0,0.1);
+            max-width: 960px;
+            width: 100%;
+            margin: 0 auto;
         }
 
         .problem-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: clamp(2rem, 5vw, 5rem);
+            grid-template-columns: 1.5fr 0.8fr;
+            gap: clamp(2rem, 4vw, 4rem);
             align-items: center;
             width: 100%;
         }
@@ -982,30 +1006,43 @@
         /* Left column */
         .problem-headline {
             font-family: 'DM Sans', sans-serif;
-            font-size: 52px;
+            font-size: clamp(34px, 3.5vw, 50px);
             font-weight: 800;
             color: #ffffff;
-            line-height: 1.05;
+            line-height: 1.08;
         }
 
         .problem-pains {
             list-style: none;
             padding: 0;
-            margin: 40px 0 0;
+            margin: 28px 0 0;
         }
 
         .problem-pains li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             font-family: 'DM Sans', sans-serif;
-            font-size: 17px;
+            font-size: 15px;
             font-weight: 400;
-            color: rgba(255,255,255,0.55);
-            line-height: 1.8;
+            color: rgba(255,255,255,0.52);
+            line-height: 1.7;
+            padding: 3px 0;
+        }
+
+        .lime-dot {
+            flex-shrink: 0;
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: #C8FF57;
+            box-shadow: 0 0 6px rgba(200,255,87,0.9), 0 0 18px rgba(200,255,87,0.5);
+            display: inline-block;
         }
 
         /* Cards column — depth stack (one behind the other) */
         .problem-cards {
             position: relative;
-            min-height: 360px;
+            min-height: 300px;
         }
 
         .problem-card {
@@ -1186,11 +1223,12 @@
         }
 
         @media (max-width: 767px) {
+            .problem-float-card { border-radius: 20px; padding: 1.75rem 1.5rem; }
             .problem-grid { grid-template-columns: 1fr; gap: 2rem; }
             .problem-text { padding-bottom: 8px; }
-            .problem-headline { font-size: 34px; }
-            .problem-pains { margin-top: 28px; }
-            .problem-pains li { font-size: 15px; }
+            .problem-headline { font-size: 30px; }
+            .problem-pains { margin-top: 20px; }
+            .problem-bg-letter { display: none; }
             /* Revert to flow layout on mobile */
             .problem-cards { min-height: 0; display: flex; flex-direction: column; gap: 12px; }
             .problem-card { position: relative; top: auto; left: auto; width: 100%; padding: 18px 20px; min-height: 0; }
@@ -1287,14 +1325,16 @@
 
         <!-- Section 2: Problem -->
         <section id="problem">
+            <div class="problem-bg-letter">Akii</div>
+            <div class="problem-float-card">
             <div class="problem-grid">
                 <!-- Left: text -->
                 <div class="problem-text">
                     <div class="problem-headline">Zu viele Meinungen.<br>Zu wenig System.</div>
                     <ul class="problem-pains">
-                        <li>— Agenturen, Entwickler, Tools — niemand sieht das Gesamtbild.</li>
-                        <li>— Prozesse laufen manuell, weil nie Zeit war, das zu ändern.</li>
-                        <li>— Du investierst — aber das eigentliche Problem bleibt.</li>
+                        <li><span class="lime-dot"></span>Agenturen, Entwickler, Tools — niemand sieht das Gesamtbild.</li>
+                        <li><span class="lime-dot"></span>Prozesse laufen manuell, weil nie Zeit war, das zu ändern.</li>
+                        <li><span class="lime-dot"></span>Du investierst — aber das eigentliche Problem bleibt.</li>
                     </ul>
                 </div>
                 <!-- Right: animated cards -->
@@ -1329,6 +1369,7 @@
                     </div>
                 </div>
             </div>
+            </div><!-- /.problem-float-card -->
         </section>
 
         <!-- Section 3: Leistungen -->
